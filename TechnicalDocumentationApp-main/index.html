@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Technical Documentation</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+      <nav id="navbar">
+        <header>Elite Artist App</header>
+          <a href="#requirements" class="nav-link">Requirements</a>
+          <a href="#getstarted" class="nav-link">Getting Started</a>
+          <a href="#backend" class="nav-link">Backend Configurations</a>
+          <a href="#build" class="nav-link">BUILD iOS + Android + Admin</a>
+          <a href="#Configuration" class="nav-link">More configuration</a>
+      </nav>
+    <main id="main-doc">
+      <section id="requirements" class="main-section">
+        <header>Requirements</header>
+        <b><p>let’s get started with the basic requirement of the server. any server with Linux installed will work but for better results and good performance, we recommend using a good VPS server with 2 GB or more ram.</p></b>
+        <h1>PHP Version & Extension Required</h1>
+        <ul>
+          <li>PHP Version 7.2+</li>
+         <li>Laravel Version 6.0</li> 
+         <li>  MySQLi PHP extension available</li>
+         <li>Flutter</li>
+         <li> Angular CLI</li>
+         <li> Android Studio / SDK  / NDK Latest for Android Build</li>
+         <li>XCODE Latest For iOS build</li>
+        </ul>
+        
+      </section>
+      <section id="getstarted" class="main-section">
+        <header>Install Flutter and Angular</header>
+        <h1>FLUTTER</h1>
+        <ul>
+            <li>Mac OS: <a href="https://flutter.dev/docs/get-started/install/macos"> https://flutter.dev/docs/get-started/install/macos</a> </li>
+            <li>Window: <a href=" https://flutter.dev/docs/get-started/install/windows">  https://flutter.dev/docs/get-started/install/windows</a> </li>
+            <li>Linux: <a href="https://flutter.dev/docs/get-started/install/linux"> https://flutter.dev/docs/get-started/install/linux</a> </li>
+            <li>Set up an editor: <a href="https://flutter.dev/docs/get-started/editor"> https://flutter.dev/docs/get-started/editor</a> </li>
+        </ul>
+
+        <h1>Installing Angular CLI</h1>
+        <h3>Step 1: Install Node.js</h3>
+        <p>Angular bases its build environments on Node.js, and many of its features depend on NMP packages. Conveniently, the Node Package Manager (NPM) client is part of the default Node.js package.
+          </p>
+          <br>
+          <p> To install Node.js:</p>
+          <ul>
+            <li>1. Visit the official <a href="https://nodejs.org/en/download/">Node.js</a> page and download the latest Node.js Windows Installeror MAC or LINUX.
+            <img style="width: 100%; height: 100%;"  src="img/screen.png">
+          </li>
+          <li>2. Access the download location and double-click the Windows Installer Package.</li>
+          <li>3. Select Next on the initial Node.js Setup Wizard screen.</li>
+          <li>4. Accept the License Agreement and click Next.</li>
+          <li>5. Define the destination folder for the installation and select Next.</li>
+          <li>6. You can customize how to install available features. Make sure that the npm package manager is part of the installation bundle. Click Next to proceed.</li>
+          <li>7. Check the box if you would like to install tools for compiling native modules automatically. They are not mandatory and require an additional 3 GB of space. Select Next to continue.          </li>
+          <li>8. Click Install to start the installation process.</li>
+          <li>9. Once the installation is complete, select Finish to exit the Setup Wizard.</li>
+          <li>10. Access the Windows Command Prompt (or PowerShell) and check the Node.js version:
+
+          </li>
+
+          </ul>
+        <code>node -v</code>
+      </section>
+      <section id="backend" class="main-section">
+        <header>Backend Configuration</header>
+        <h1>API Setup on server</h1>
+        <p>The Laravel structure has a couple of framework prerequisites. These prerequisites are fulfilled by the Laravel Homestead virtual machine, so it’s strongly suggested that you use Homestead as your local Laravel environment.</p>
+        <p>Nonetheless, in case you are not utilizing Homestead, you should ensure your server meets the accompanying necessities:</p>
+        <ul>
+            <li><b>PHP >= 7.2</b></li>
+            <li><b>BCMath PHP Extension</b></li>
+            <li><b>CType PHP Extension</b></li>
+            <li><b>JSON PHP Extension</b></li>
+            <li><b>Mbstring PHP Extension</b></li>
+            <li><b>OpenSSL PHP Extension</b></li>
+            <li><b>PDO PHP Extension</b></li>
+            <li><b>Tokenizer PHP Extension</b></li>
+        </ul>
+        <h3>From Where to Begin?</h3>
+        <ul>
+          <li><b>Step 1 : Login into cPanel with the credentials.</b></li>
+          <li><b>Step 2 : After a successful login, click on “MySQL Databases” and create a database.</b>
+            <img style="width: 100%; height: 100%;"  src="img/1.png">
+          </li>
+          <li><b>Step 3 : Add your database name and click on create database button. it’s better if you save these details on your machine for future usage. </b></li>
+          <li><b>Step 4 : Now, Compress a ZIP file of the API folder, and Upload ZIP to the public_html directory on your server, then extract the API.ZIP on the server, extracted files would appear all laravel source code files. move all the codes on the root of public_html.
+            <ul>
+              <p>You need to grant the directory permissions 775 to the respective directories below.</p>
+              <li>public_html/bootstrap/cache/
+              </li>
+              <li>public_html/storage/framework/
+              </li>
+              <li>
+                public_html/storage/logs/
+              </li>
+            </ul> </b></li>
+        </ul>
+        <p>If everything goes correct you should see this image on the link yourdomain/api/public</p>
+        <img style="width: 100%; height: 100%;"  src="img/one.png">
+        <h1>Setup Admin Panel With API Server</h1>
+        <h3>Adding API With Admin Panel</h3>
+        <p>Make Sure to complete API setup before the compiling process for the application.        </p>
+        <p>Open the folder name Admin Panel App.</p>
+        <p>now open <b>Admin Panel/src/environments/environment.prod.ts and Admin Panel/src/environments/environment.ts file and change the following.</b></p>
+        <img style="width: 100%; height: 100%;"  src="img/screen1.png">
+        <p>Update baseURL with your API URL</p>
+        <ul>
+          <li>
+            <b>https://yourapiendpoint.com/public/api/
+              </b>
+          </li>
+          <li><b>
+            https://yourapiendpoint.com/public/storage/images/
+          </b></li>
+        </ul>
+        <img style="width: 100%; height: 100%;"  src="img/screen1.png">
+        <p>Same part should be done on the apps </p>
+        <h3>Adding API With Bands App</h3>
+        <p>Make Sure to complete API setup before the compiling process for the application.</p>
+
+          <p>Open the folder name Band App.</p>
+          
+          <p>Now open the Band App/lib/app/env.dart file and change the following.</p>
+          <h3>Adding API With Venue App</h3>
+          <p>Make Sure to complete API setup before the compiling process for the application.</p>
+  
+            <p>Open the folder name Venue App.</p>
+            
+            <p>Now open the Venue App/lib/app/env.dart file and change the following.</p>
+    
+      </section>
+      <section id="build" class="main-section">
+        <header>BUILD</header>
+        <h1>Publishing to the Google Play Store</h1>
+      <p>For detailed instructions on publishing your app to the <a href="https://developer.android.com/distribute/googleplay/start">Google Play Store</a>, see the Google Play launch documentation.</p>
+      <h3>Updating the app’s version number</h3>
+      <p>The default version number of the app is 1.0.0. To update it, navigate to the pubspec.yaml file and update the following line:</p>
+      <p>version: 1.0.0+1</p>
+      <p>The version number is three numbers separated by dots, such as 1.0.0 in the example above, followed by an optional build number such as 1 in the example above, separated by a +.</p>
+      <p>Both the version and the build number may be overridden in Flutter’s build by specifying --build-name and --build-number, respectively.</p>
+      <p>In Android, build-name is used as versionName while build-number used as versionCode. For more information, see Version your app in the Android documentation.</p>
+      <p>After updating the version number in the pubspec file, run flutter pub get from the top of the project, or use the Pub get button in your IDE. This updates the versionName and versionCode in the local.properties file, which are later updated in the build.gradle file when you rebuild the Flutter app.</p>
+      <h3>How do I build a release from within Android Studio?</h3>
+      <p>In Android Studio, open the existing android/ folder under your app’s folder. Then, select build.gradle (Module: app) in the project panel:
+
+      </p>
+      <img style="width: 100%; height: 100%;"  src="img/screen2.png">
+      <p>Next, select the build variant. Click Build > Select Build Variant in the main menu. Select any of the variants in the Build Variants panel (debug is the default):</p>
+      <img style="width: 100%; height: 100%;"  src="img/screen4.png">
+      <p>The resulting app bundle or APK files are located in build/app/outputs within your app’s folder.</p>
+
+      <h1>Publishing to Apple Store Connect</h1>
+      <p>This guide provides a step-by-step walkthrough of releasing a Flutter app to the <a href="https://developer.apple.com/app-store/submitting/">App Store</a> and <a href="https://developer.apple.com/testflight/">TestFlight</a>.</p>
+      <h3>Preliminaries</h3>
+      <p>Xcode is required to build and release your app. You must use a device running macOS to follow this guide.
+
+        Before beginning the process of releasing your app, ensure that it meets Apple’s App Review Guidelines.
+        
+        In order to publish your app to the App Store, you must first enroll in the Apple Developer Program. You can read more about the various membership options in Apple’s Choosing a Membership guide.
+        
+        </p>
+        <h3>Register your app on App Store Connect</h3>
+        <p>Manage your app’s life cycle on App Store Connect (formerly iTunes Connect). You define your app name and description, add screenshots, set pricing, and manage releases to the App Store and TestFlight.
+
+          Registering your app involves two steps: registering a unique Bundle ID, and creating an application record on App Store Connect.
+          
+          For a detailed overview of App Store Connect, see the App Store Connect guide.</p>
+          <h3>Register a Bundle ID</h3>
+          <p>Every iOS application is associated with a Bundle ID, a unique identifier registered with Apple. To register a Bundle ID for your app, follow these steps:
+
+            Open the App IDs page of your developer account.
+            Click + to create a new Bundle ID.
+            Enter an app name, select Explicit App ID, and enter an ID.
+            Select the services your app uses, then click Continue.
+            On the next page, confirm the details and click Register to register your Bundle ID.</p>
+            <h3>Create an application record on App Store Connect</h3>
+            <p>Register your app on App Store Connect:
+
+              Open App Store Connect in your browser.
+              On the App Store Connect landing page, click My Apps.
+              Click + in the top-left corner of the My Apps page, then select New App.
+              Fill in your app details in the form that appears. In the Platforms section, ensure that iOS is checked. Since Flutter does not currently support tvOS, leave that checkbox unchecked. Click Create.
+              Navigate to the application details for your app and select App Information from the sidebar.
+              In the General Information section, select the Bundle ID you registered in the preceding step.
+              For a detailed overview, see Add an app to your account.</p>
+
+              <img style="width: 100%; height: 100%;"  src="img/screen3.png">
+              <ul>
+                <li>Open the Xcode Project</li>
+                <li>Add the id </li>
+                <li>Change the version if needed </li>
+                <li>Open the tab build </li>
+                <li>Click Archive button</li>
+                <li>Wait till end </li>
+                <li>Once is done cliek send to the store and wait untill is done </li>
+              </ul>
+
+              <h1>Build Admin</h1>
+              <p>Inside the project folder:</p>
+              <code>ng build --configuration production --aot</code>
+              <p>This also performs AoT compilation for even smaller bundles (no Angular compiler, instead, generated compiler output). The bundles are much smaller with AoT if you use Angular 4 as the generated code is smaller.
+                You can test your app with AoT in development mode (source maps, no minification) and AoT by running ng build --aot.</p>
+                <h3>Output</h3>
+                <p>The default output-dir is ./dist, although it can be changed in ./angular-cli.json.</p>
+                <ul>
+                  <li>Now find the dist folder inside your project</li>
+                  <li>Compress the folder</li>
+                  <li>Upload to your server </li>
+                  <li>Unzip the folder </li>
+                  <li>Change the name as prefere and is done</li>
+                </ul>
+      </section>
+
+      <section id="Configuration" class="main-section">
+        <header>Configuration</header>
+        <h1>SMTP EMAIL CONFIGURATION</h1>
+        <p><b>Step 1:</b>to setup the email you have to reach the env file inside the project API</p>
+        <p><b>Step 2:</b> Configure Gmail SMTP Server in Laravel Application</p>
+        <p>Laravel uses config/mail.php file for storing details used in mail sending. This file contains settings like MAIL_DRIVER, MAIL_HOST, MAIL_PORT, etc. In order to successfully send an email, we need to provide this information.</p>
+        <p>To add this required information, we need not edit this config/mail.php file, rather we would supply these details accordingly in the .env file.</p>
+        <p>This, open your .env file which is located in your root directory of our application and checkout for these settings:</p>
+        <ul>
+          <li>MAIL_DRIVER=smtp</li>
+          <li>MAIL_HOST=smtp.yourmail.com</li>
+          <li>MAIL_PORT=465</li>
+          <li>MAIL_USERNAME=</li>
+          <li>MAIL_PASSWORD=</li>
+          <li>
+            MAIL_ENCRYPTION=TLS</li>
+        </ul>
+        <p><b>Step 2: </b> you are done.</p>
+        <h1>PUSHUP NOTIFICATION</h1>
+<p>Follow this Article <a href="https://medium.com/@alaa07996/firebase-push-notifications-with-flutter-6848892a1c15">https://medium.com/@alaa07996/firebase-push-notifications-with-flutter-6848892a1c15</a> For More About Notification With Firebase on Flutter</p>
+<p>Once you finish the firebase configuration go inside messaging and you can take the FMC Firebase token to add inside the admin setting console</p>
+<img style="width: 100%; height: 100%;"  src="img/smpt.png">
+      </section>
+    </main>
+  </body>
+</html>
