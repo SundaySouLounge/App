@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "277575211611",
+    "project_id": "eliteartist-9d2a4",
+    "storage_bucket": "eliteartist-9d2a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277575211611:android:848352599a09e63c5ffd7e",
+        "android_client_info": {
+          "package_name": "com.eliteartist.venue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQSuNyp9oN_3si0fbS9_scyunzKfPhNzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
