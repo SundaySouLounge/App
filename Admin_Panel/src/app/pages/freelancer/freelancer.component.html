@@ -1,0 +1,701 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<div class="animated fadeIn">
+    <div class="row">
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    {{util.translate('All Freelancers')}}
+                    <div class="card-header-actions">
+                        <button type="submit" class="btn btn-sm btn-primary" style="float: right;margin: 0px 5px;"
+                            (click)="createNew()">
+                            {{util.translate('Add New')}}
+                        </button> &nbsp;
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row flex_row">
+                        <div class="col-lg-6">
+                            <input type="text" class="form-control form-control-lg" id="name"
+                            [placeholder]="util.translate('Search Artist')" (input)="search($event.target.value)">
+                        </div>
+                        <div class="col-lg-6">
+                        </div>
+                    </div>
+                    <div class="error_div" *ngIf="individuals?.length <= 0 && dummyIndivuduals?.length <= 0">
+                        <label>{{util.translate('No Data Found..')}}</label>
+                    </div>
+
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col"> {{util.translate("Id")}} </th>
+                                <th scope="col"> {{util.translate("Cover")}} </th>
+                                <th scope="col"> {{util.translate("Name")}} </th>
+                                <th scope="col"> {{util.translate("City")}} </th>
+                                <th scope="col"> {{util.translate("Categories")}} </th>
+                                <th scope="col"> {{util.translate("Phone")}} </th>
+                                <th scope="col"> {{util.translate("Email")}} </th>
+                                <th scope="col"> {{util.translate("Solo")}} </th>
+                                <th scope="col"> {{util.translate("Duo")}} </th>
+                                <th scope="col"> {{util.translate("Trio")}} </th>
+                                <th scope="col"> {{util.translate("Quarter")}} </th>
+                                <th scope="col"> {{util.translate("Is Popular")}} </th>
+                                <th scope="col"> {{util.translate("Action")}} </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                            <tr
+                                *ngFor="let item of individuals | paginate: {id:'pagin1', itemsPerPage: 10, currentPage: page };let i = index;">
+                                <th scope="row">
+                                    {{item.id}}
+                                </th>
+                                <td>
+                                    <img class="img-responsive" style="height: 40px;width: 40px; object-fit: cover;"
+                                        [src]="api.imageUrl + item.user_data.cover"
+                                        onError="this.src='assets/img/dummy.jpeg'">
+                                </td>
+                                <td>
+                                    {{item.user_data.first_name +' '+ item.user_data.last_name}}
+                                </td>
+                                <td>
+                                    {{item && item.city_data && item.city_data.name && item.city_data.name !=null ?
+                                    item.city_data.name :''}}
+                                </td>
+                                <td>
+                                    <div style="width: 100px;display: flex;flex-direction: column;overflow: scroll;">
+                                        <span *ngFor="let cate of item.web_cates_data;let cateIndex = index">
+                                            <p style="font-size: 10px;margin: 0px;"> {{cate.name}} <span
+                                                    *ngIf="cateIndex !=item.web_cates_data.length - 1">,</span></p>
+
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{item.user_data.mobile}}
+                                </td>
+                                <td>
+                                    {{item.user_data.email}}
+                                </td>
+                                
+                                <td>
+                                    <c-form-check [switch]="true">
+                                        <input cFormCheckInput type="checkbox"
+                                            [checked]="item.have_shop == 1? true:false" (change)="changeShop(item)" />
+                                    </c-form-check>
+                                </td>
+
+                                <td>
+                                    <c-form-check [switch]="true">
+                                        <input cFormCheckInput type="checkbox" [checked]="item.in_home == 1? true:false"
+                                            (change)="changeHome(item)" />
+                                    </c-form-check>
+                                </td>
+                                <td>
+                                    <c-form-check [switch]="true">
+                                        <input cFormCheckInput type="checkbox"
+                                            [checked]="item.triocheck == 1? true:false" (change)="changeTrio(item)" />
+                                    </c-form-check>
+                                </td>
+                                <td>
+                                    <c-form-check [switch]="true">
+                                        <input cFormCheckInput type="checkbox"
+                                            [checked]="item.quartetcheck == 1? true:false" (change)="changeQuartet(item)"/>
+                                    </c-form-check>
+                                </td>
+                                <td>
+                                    <c-form-check [switch]="true">
+                                        <input cFormCheckInput type="checkbox" [checked]="item.popular == 1? true:false"
+                                            (change)="changePopular(item)" />
+                                    </c-form-check>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <c-badge [color]="item.status == 1?'success':'dark'"
+                                            [class]="item.status == 1 ? 'me-1 badge bg-success':'me-1 badge bg-dark'"
+                                            (click)="statusUpdate(item)">
+                                            {{item.status == 1 ?util.translate('Active'):util.translate('Deactived')}}
+                                        </c-badge>
+
+                                        <c-badge color="info" class="me-1 badge bg-info"
+                                            (click)="updateInfo(item.id,item.uid)">
+                                            {{ util.translate('View')}}
+                                        </c-badge>
+
+                                        <c-badge color="danger" class="me-1 badge bg-danger" (click)="deleteItem(item)">
+                                            {{ util.translate('Delete')}}
+                                        </c-badge>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div *ngIf="individuals?.length > 0">
+                        <pagination-controls id="pagin1" (pageChange)="page = $event"></pagination-controls>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal #myModal2="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-primary modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{util.translate('Manage Freelancer')}} </h5>
+                <button type="button" class="close" (click)="myModal2.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="logoContainer">
+                    <img [src]="api.imageUrl+ cover" onError="this.src='assets/img/dummy.jpeg'">
+                </div>
+                <div class="fileContainer sprite">
+                    <span> {{util.translate('Add Cover')}} </span>
+                    <input (change)="preview_banner($event.target.files)" type="file" value="Choose File">
+                </div>
+                <div class="center-data-helper mb-5">
+
+                </div>
+                <div class="card card-profile shadow">
+                    <div class="card-header text-center border-0" *ngIf="action =='create'">
+                        <div class="d-flex justify-content-start">
+                            <h4> {{util.translate("Owner Details")}} </h4>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="action =='create'">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+                                        <input type="text" id="input-first-name"
+                                            class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('First Name')" [(ngModel)]="firstName">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+                                        <input type="text" id="input-last-name"
+                                            class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Last Name')" [(ngModel)]="lastName">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="action =='create'">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+                                        <input type="email" id="input-first-name"
+                                            class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Email')" [(ngModel)]="email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+                                        <input type="password" id="input-last-name"
+                                            class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Password')" [(ngModel)]="password">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="action =='create'">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+                                        <input type="text" id="input-first-name"
+                                            class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Country Code')" [(ngModel)]="country_code">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+                                        <input type="number" id="input-last-name"
+                                            class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Mobile')" [(ngModel)]="mobile">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="action =='create'">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <select id="select2" [(ngModel)]="gender" name="select2"
+                                        class="form-control form-control-alternative">
+                                        <option value="1"> {{util.translate('Male')}} </option>
+                                        <option value="0"> {{util.translate('Female')}} </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+                    <div class="animated fadeIn">
+                    <div class="row">
+                        <div class="col-lg-12">
+                        <tabset>
+                            <!--TABS-->
+                 <tab heading="{{util.translate('Info')}}">
+                    <div class="card-header text-center border-0">
+                        <div class="d-flex justify-content-start">
+                            <h4> {{util.translate("Freelancer Details")}} </h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <ng-multiselect-dropdown [placeholder]="util.translate('Top Category')"
+                                        maxHeight="100" [data]="categories" [(ngModel)]="selectedItems"
+                                        [settings]="dropdownSettings">
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+
+                                        <textarea class="form-control form-control-alternative" rows="3"
+                                            [(ngModel)]="about"
+                                            [placeholder]="util.translate('Info of Artist')"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+
+                                        <textarea class="form-control form-control-alternative" rows="3"
+                                            [(ngModel)]="address"
+                                            [placeholder]="util.translate('Artist Address')"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <select id="select2" [(ngModel)]="cityID" name="select2"
+                                        class="form-control form-control-alternative">
+                                        <option [value]="item.id" *ngFor="let item of cities"> {{item.name}} </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+                                        <input type="text" id="input-last-name"
+                                            class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Zipcode')" [(ngModel)]="zipcode">
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="input-group input-group-alternative">
+                                        <input type="number" id="input-last-name"
+                                            class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Commission Rate')" [(ngModel)]="rate">
+                                    </div>
+                                </div>
+                            </div>
+
+                              <!--Solo-->
+                              <div class="col-lg-12" *ngIf="action !='create'">
+                                <div class="row">
+                                <div class="col-lg-6">
+                                   <div class="form-group">
+                                       <label class="form-control-label" for="input-email"> Solo Price
+                                       </label>
+                                       <select id="select2" [(ngModel)]="solopack" name="select2"
+                                       class="form-control form-control-alternative" (change)="onSoloPackChange()">
+                                            <option value="£150-£300"> £150-£300 </option>
+                                            <option value="£300-£400"> £300-£400 </option>
+                                        </select>
+                                   </div>
+                               </div>
+                               
+                               <div class="col-lg-6">
+                                   <div class="form-group">
+                                       <label class="form-control-label" for="input-password"> Solo Instrument
+                                       </label>
+                                    <ng-multiselect-dropdown [placeholder]="Instruments"
+                                        maxHeight="100" [data]="instrumentsList" [(ngModel)]="soloinstru"
+                                        [settings]="dropdownProp">
+                                    </ng-multiselect-dropdown>
+                                   </div>
+                               </div> 
+                            </div>
+                           </div>
+                             <!--Duo-->
+                             <div class="col-lg-12" *ngIf="action !='create'">
+                                <div class="row">
+                                <div class="col-lg-6">
+                                   <div class="form-group">
+                                       <label class="form-control-label" for="input-email"> Duo Price
+                                       </label>
+                                       <select id="select2" [(ngModel)]="duopack" name="select2"
+                                       class="form-control form-control-alternative" (change)="onSoloPackChange()">
+                                            <option value="£150-£300"> £150-£300 </option>
+                                            <option value="£300-£400"> £300-£400 </option>
+                                        </select>
+                                   </div>
+                               </div>
+                               
+                               <div class="col-lg-6">
+                                   <div class="form-group">
+                                       <label class="form-control-label" for="input-password"> Duo Instrument
+                                       </label>
+                                    <ng-multiselect-dropdown [placeholder]="Instruments"
+                                        maxHeight="100" [data]="instrumentsList" [(ngModel)]="duoinstru"
+                                        [settings]="dropdownProp">
+                                    </ng-multiselect-dropdown>
+                                   </div>
+                               </div> 
+                            </div>
+                           </div>
+                             <!--Trio-->
+                             <div class="col-lg-12" *ngIf="action !='create'">
+                                <div class="row">
+                                <div class="col-lg-6">
+                                   <div class="form-group">
+                                       <label class="form-control-label" for="input-email"> Trio Price
+                                       </label>
+                                       <select id="select2" [(ngModel)]="triopack" name="select2"
+                                       class="form-control form-control-alternative" (change)="onSoloPackChange()">
+                                            <option value="£300-£400"> £300-£400 </option>
+                                            <option value="£400-£500"> £400-£500 </option>
+                                        </select>
+                                   </div>
+                               </div>
+                               
+                               <div class="col-lg-6">
+                                   <div class="form-group">
+                                       <label class="form-control-label" for="input-password"> Trio Instrument
+                                       </label>
+                                    <ng-multiselect-dropdown [placeholder]="Instruments"
+                                        maxHeight="100" [data]="instrumentsList" [(ngModel)]="trioinstru"
+                                        [settings]="dropdownProp">
+                                    </ng-multiselect-dropdown>
+                                   </div>
+                               </div> 
+                            </div>
+                           </div>
+                             <!--Quartet-->
+                             <div class="col-lg-12" *ngIf="action !='create'">
+                                <div class="row">
+                                <div class="col-lg-6">
+                                   <div class="form-group">
+                                       <label class="form-control-label" for="input-email"> Quartet Price
+                                       </label>
+                                       <select id="select2" [(ngModel)]="quartetpack" name="select2"
+                                       class="form-control form-control-alternative" (change)="onSoloPackChange()">
+                                            <option value="£300-£400"> £300-£400 </option>
+                                            <option value="£400-£500"> £400-£500 </option>
+                                            <option value="£500-£600"> £500-£600 </option>
+                                        </select>
+                                   </div>
+                               </div>
+                               
+                               <div class="col-lg-6">
+                                   <div class="form-group">
+                                       <label class="form-control-label" for="input-password"> Quartet Instrument
+                                       </label>
+                                    <ng-multiselect-dropdown [placeholder]="Instruments"
+                                        maxHeight="100" [data]="instrumentsList" [(ngModel)]="quartetinstru"
+                                        [settings]="dropdownProp">
+                                    </ng-multiselect-dropdown>
+                                   </div>
+                               </div> 
+                            </div>
+                           </div>
+                           <!--Wedding-->
+                        <div class="col-lg-12" *ngIf="action !='create'">
+                            <div class="row">
+                            <div class="col-lg-6">
+                               <div class="form-group">
+                                   <label class="form-control-label" for="input-email"> Wedding Price
+                                   </label>
+                                   <select id="select2" [(ngModel)]="weddingpack" name="select2"
+                                       class="form-control form-control-alternative" (change)="onSoloPackChange()">
+                                            <option value="£300-£600"> £300-£600</option>
+                                            <option value="£600-£900">£600-£900 </option>
+                                        </select>
+                               </div>
+                           </div>
+                           
+                           <div class="col-lg-6">
+                               <div class="form-group">
+                                   <label class="form-control-label" for="input-password"> Wedding Instrument
+                                   </label>
+                                <ng-multiselect-dropdown [placeholder]="Instruments"
+                                   maxHeight="100" [data]="instrumentsList" [(ngModel)]="weddinginstru"
+                                   [settings]="dropdownProp">
+                               </ng-multiselect-dropdown>
+                               </div>
+                           </div> 
+                        </div>
+                       </div>
+                        <!--Traveler-->
+                        <div class="col-lg-12" *ngIf="action !='create'">
+                            <div class="row">
+                            <div class="col-lg-6">
+                               <div class="form-group">
+                                   <label class="form-control-label" for="input-email"> Willing to travel
+                                   </label>
+                                   <select id="select2" [(ngModel)]="traveler" name="select2"
+                                       class="form-control form-control-alternative" (change)="onSoloPackChange()">
+                                            <option value="YES"> YES</option>
+                                            <option value="NO">NO </option>
+                                        </select>
+                               </div>
+                             </div>
+                           <div class="col-lg-6">
+                          </div> 
+                        </div>
+                       </div>
+                        <!--End-->
+
+                        <div class="col-lg-12" *ngIf="action !='create'">
+                            
+                            <div class="divider"></div>
+                            <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="input-email">{{util.translate('Email')}}</label>
+                                    <input type="text" id="input-email" class="form-control form-control-alternative"
+                                        [placeholder]="util.translate('Email')" [(ngModel)]="ema">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="input-password">{{util.translate('Password')}}</label>
+                                    <input type="text" id="input-password" class="form-control form-control-alternative"
+                                        [placeholder]="util.translate('Password')" [(ngModel)]="pass">
+                                </div>
+                                <!-- Text on the right side -->
+                                <div class="text-left text-danger font-weight-bold">To change the password add the email</div>
+                            </div>
+                            </div>
+                            <div class="divider"></div>
+                            
+
+                            <div class="row">
+                                 <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-first">{{util.translate('Band Name')}}</label>
+                                        <input type="text" id="input-first" class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Band Name')" [(ngModel)]="firstN">
+                                    </div>
+                                </div>
+                            
+                                <!-- <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-last">{{util.translate('Last Name')}}</label>
+                                        <input type="text" id="input-last" class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Last Name')" [(ngModel)]="lastN">
+                                    </div>
+                                </div>  -->
+                            
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-nemail">{{util.translate('Email')}}</label>
+                                        <input type="text" id="input-nemail" class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Email')" [(ngModel)]="emailN">
+                                    </div>
+                                </div>
+                            
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-phone">{{util.translate('Phone')}}</label>
+                                        <input type="text" id="input-phone" class="form-control form-control-alternative"
+                                            [placeholder]="util.translate('Phone')" [(ngModel)]="phoneN">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="input-email">
+                                        {{util.translate('Basic Fee Started')}}
+                                    </label>
+                                    <input type="number" id="input-email" class="form-control form-control-alternative"
+                                        [placeholder]="util.translate('Basic Fee Started')" [(ngModel)]="fee_start">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="input-email">
+                                        {{util.translate('Have Shop?')}} </label>
+                                    <br>
+                                    <c-form-check [switch]="true">
+                                        <input cFormCheckInput type="checkbox" [(ngModel)]="have_shop"
+                                            [checked]="have_shop == 1? true:false" />
+                                    </c-form-check>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </tab>
+
+                <tab heading="{{util.translate('Calendar')}}" *ngIf="action != 'create'">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="row">
+                            <div class="col-xs-12 col-lg-6 col-md-4 form-group">
+                                <input type="date"
+                                class="form-control"
+                                [(ngModel)]="selectedDate"
+                                [min]="minDate.toISOString().split('T')[0]"
+                                [max]="maxDate.toISOString().split('T')[0]"
+                                [disabled]="disabledDates && disabledDates.indexOf(selectedDate) !== -1"
+                                [ngModelOptions]="{standalone: true}">            
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <button type="button" class="btn btn-primary" (click)="addUnavailableDate()">
+                                  {{util.translate("Set Unavailable Date")}}
+                                </button>
+                              </div>
+                              
+                            <div class="col-xs-12 col-lg-6 col-md-4 form-group">
+                                <h3>{{util.translate("Unavailable Dates")}}</h3>
+                                <div *ngIf="unavailableDates && unavailableDates.length > 0">
+                                    <ul>
+                                        <li *ngFor="let date of unavailableDates">{{ formatDate(date) }}</li>
+                                    </ul>
+                                </div>
+                                <div *ngIf="!unavailableDates || unavailableDates.length === 0">
+                                    <p>No unavailable dates</p>
+                                </div>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </tab>
+                  
+            
+                  <tab heading="{{util.translate('Image/ Video')}}" *ngIf="action !='create'">
+                    <div class="col-xs-12 col-lg-12 col-md-12 form-group">
+                        <div class="row">
+                        <div class="col-xs-6 col-lg-6 col-md-6 form-group">
+                            <h3>Video Section</h3>
+                            <div *ngFor="let video of videos">
+                              
+                                <!-- Display input fields and buttons when not in editing mode -->
+                                <div *ngIf="!video.isEditing">
+                                  <!-- Two input fields for title and link with sample data -->
+                                  <input [(ngModel)]="video.title" placeholder="Enter Title">
+                                  <input [(ngModel)]="video.video_link" placeholder="Enter Link">
+                                  <br>
+                                  <br>
+                                  <!-- Button for delete -->
+                                  <button type="button" class="btn btn-secondary" (click)="deleteVideo(video)">Delete</button>
+                                  <!-- Button for edit -->
+                                  <button type="button" class="btn btn-primary" (click)="startEditing(video)">Edit</button>
+                                </div>
+                                
+                                <!-- Display update and cancel buttons when in editing mode -->
+                                <div *ngIf="video.isEditing">
+                                  <!-- Input fields for editing -->
+                                  <input [(ngModel)]="video.title" placeholder="Enter Title">
+                                  <input [(ngModel)]="video.video_link" placeholder="Enter Link">
+                                  <br>
+                                  <br>
+                                  <!-- Button for update -->
+                                  <button type="button" class="btn btn-success" (click)="updateVideo(video)">Update</button>
+                                  <!-- Button for cancel editing -->
+                                  <button type="button" class="btn btn-warning" (click)="cancelEditing(video)">Cancel</button>
+                                </div>
+                                <br>
+                              </div>
+                              
+                              
+                        </div>
+                            <!-- Add this section to your template -->
+                            <div class="col-xs-6 col-lg-6 col-md-6 form-group">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="d-flex align-items-center">
+                                            <h3 style="margin-right: 10px;">Images Section</h3>
+                                            <button type="button" class="btn btn-success" (click)="openImageUpload()">Add</button>
+                                            <!-- Add the file input element -->
+                                            <input type="file" (change)="onImageSelect($event)" style="display: none" #imageInput>
+                                        </div>
+                                        <br>
+                                        <div *ngIf="images.length > 0">
+                                            <div class="row">
+                                                <div *ngFor="let imageUrl of images; let i = index" class="col-lg-3 mb-2">
+                                                    <div class="image-container">
+                                                        <img [src]="api.imageUrl + imageUrl" class="img-responsive" style="height: 70px; width: 70px; object-fit: cover;" alt="Image">
+                                                        <button type="button" class="btn btn-danger delete-button" (click)="deleteImage(imageUrl)">X</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                    </div>
+                 </div>
+                </tab>
+
+                </tabset>
+            </div>
+        </div>
+        </div>
+        <!--TABS-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="createSalon()" *ngIf="action == 'create'">
+                    {{util.translate("Save changes")}}
+                </button>
+                <button type="button" class="btn btn-primary" (click)="updateSalon()" *ngIf="action == 'update'">
+                    {{util.translate("Save changes")}}
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="myModal2.close()">
+                    {{util.translate("Close")}}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

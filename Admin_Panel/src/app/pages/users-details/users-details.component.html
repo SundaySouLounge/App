@@ -1,0 +1,256 @@
+
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card-body">
+                <div class="back_image" [style.backgroundImage]="'url('+ getImage() +'),url(assets/img/dummy.jpeg)'">
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <p class="head"><b> {{util.translate('Basic Informations')}} </b> </p>
+                  </div>
+                  <div class="col-6 text-right" *ngIf="!isEditing">
+                    <button class="btn btn-success" (click)="toggleEditing()">
+                      <i class="fa fa-pencil"></i> Edit
+                    </button>
+                  </div>
+                  <div class="col-6 text-right" *ngIf="isEditing">
+                    <button class="btn btn-success"  (click)="saveChanges()">
+                      <i class="fa fa-pencil"></i> Save
+                    </button>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="!isEditing">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Name')}} : </b></p>
+                  </div>
+                  <div class="col-6">
+                    <p class="values"> {{name}} </p>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="isEditing">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Name')}} : </b></p>
+                  </div>
+                  <div class="col-12">
+                    <input class="full-input" [(ngModel)]="firstname" placeholder="{{util.translate('First Name')}}">
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="isEditing">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Name')}} : </b></p>
+                  </div>
+                  <div class="col-12">
+                    <input class="full-input" [(ngModel)]="lastname" placeholder="{{util.translate('Last Name')}}">
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="!isEditing">
+                <div class="row">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Email')}} : </b></p>
+                  </div>
+                  <div class="col-6">
+                    <p class="values"> {{email}} </p>
+                  </div>
+                </div>
+                </div>
+
+                <div class="row" *ngIf="isEditing">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Email')}} : </b></p>
+                  </div>
+                  <div class="col-12">
+                    <input class="full-input" [(ngModel)]="email" placeholder="{{util.translate('Email')}}">
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="!isEditing">
+                <div class="row">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Contact No')}} : </b></p>
+                  </div>
+                  <div class="col-6">
+                    <p class="values"> {{phone}} </p>
+                  </div>
+                </div>
+                </div>
+
+                <div class="row" *ngIf="isEditing">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Phone')}} : </b></p>
+                  </div>
+                  <div class="col-12">
+                    <input class="full-input" [(ngModel)]="phone" placeholder="{{util.translate('Phone')}}">
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="!isEditing">
+                <div class="row">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Venue Name')}} : </b></p>
+                  </div>
+                  <div class="col-6">
+                    <p class="values"> {{venueName}} </p>
+                  </div>
+                </div>
+                </div>
+
+                <div class="row" *ngIf="isEditing">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Venue Name')}} : </b></p>
+                  </div>
+                  <div class="col-12">
+                    <input class="full-input" [(ngModel)]="venueName" placeholder="{{util.translate('Venue Name')}}">
+                  </div>
+                </div>
+                
+                <div class="row" *ngIf="!isEditing">
+                <div class="row">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Venue Address')}} : </b></p>
+                  </div>
+                  <div class="col-6">
+                    <p class="values"> {{venueAddress}} </p>
+                  </div>
+                </div>
+                </div>
+
+                <div class="row" *ngIf="isEditing">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Venue Address')}} : </b></p>
+                  </div>
+                  <div class="col-12">
+                    <input class="full-input"[(ngModel)]="venueAddress" placeholder="{{util.translate('Venue Address')}}">
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="!isEditing">
+                <div class="row">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Contact No')}} : </b></p>
+                  </div>
+                  <div class="col-6">
+                    <p class="values"> {{secondPhone}} </p>
+                  </div>
+                </div>
+                </div>
+
+                <div class="row" *ngIf="isEditing">
+                  <div class="col-6">
+                    <p class="sub"><b>{{util.translate('Second Phone')}} : </b></p>
+                  </div>
+                  <div class="col-lg-12">
+                    <input class="full-input" [(ngModel)]="secondPhone" placeholder="{{util.translate('Second Phone')}}">
+                  </div>
+                </div>
+                 
+              </div>
+
+              <div class="row">
+              <div class="col-lg-6 b-r-default text-center">
+                <input [(ngModel)]="pass" placeholder="Add New Password">
+              </div>
+              <div class="col-lg-6">
+
+              <button class="btn btn-primary" (click)="resetPassword()">Reset Password</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6 b-r-default text-center">
+                <p>new password after they reset:</p>
+                <p><b>{{ passwordSecond }}</b></p>
+              </div>
+              </div>
+              
+            </div>
+
+            <div class="col-lg-8">
+
+              <div class="card-body">
+                <tabset>
+                  <tab>
+                    <ng-template tabHeading><i class="icon-basket"></i> {{util.translate('Events')}}
+                    </ng-template>
+                    <div class="orders">
+                      <div style="height: 70vh;overflow: scroll;padding: 10px;">
+                        <p *ngIf="!appointments?.length" class="ion-text-center">
+                          {{util.translate('No New Appointments Found')}}
+                        </p>
+                        <div class="card_div" *ngFor="let item of appointments" (click)="viewData(item.id)">
+                          <div class="desc_div">
+                            <p style="font-weight: bold;color: gray;font-size: 12px;">
+                              {{util.translate('Event')}}
+                              #{{item.id}}
+                            </p>
+                            <div class="store_info">
+                              <div *ngIf="item.individual_id != null || item.individual_uid != null">
+                                <p class="name">{{item.musician}}</p>
+                                <p class="address">{{item.mobile}} </p>
+                              </div>
+                              <div *ngIf="item.salon_id != null || item.salon_uid != null">
+                                <p class="name">{{item.musician}}</p>
+                                <p class="address">{{item.mobile}} </p>
+                              </div>
+                            </div>
+                            <div *ngIf="item.items && item.items.services && item.items.services.length > 0" class="border_bottom">
+                              <p *ngFor="let order of item.items.services; let ol = index" class="items">
+                                  <span>hello {{order.name}}</span>
+                                  <span>
+                                      <span *ngIf="util.cside =='left'">
+                                          hello {{util.currecny}} {{order.discount == 0 ? order.price : order.off}}
+                                      </span>
+                                      <span *ngIf="util.cside =='right'">
+                                          hello {{order.discount == 0 ? order.price : order.off}} {{util.currecny}}
+                                      </span>
+                                  </span>
+                              </p>
+                          </div>
+                            
+                            <p class="datetime">{{util.translate('Grand Total')}}
+                              <span>
+                                <span *ngIf="util.cside =='left'">
+                                  {{util.currecny}} {{item.fee}}
+                                </span>
+                                <span *ngIf="util.cside =='right'">
+                                  {{item.grand_total}}
+                                  {{util.currecny}}
+                                </span>
+                              </span>
+                            </p>
+                            <p class="datetime">{{util.translate('Date')}} : {{item.date}} </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </tab>
+                  <div class="row">
+                    <div class="col-3 b-r-default text-center">
+                      <p class="text-muted" style="font-size: 10px;">{{util.translate('Appointments')}} </p>
+                      <span style="font-size: 10px;">{{appointments.length}}</span>
+                    </div>
+                   <div class="col-3 b-r-default text-center">
+                      <p class="text-muted" style="font-size: 10px;">{{util.translate('Artist work with')}} </p>
+                      <span style="font-size: 10px;">{{appointments.length}}</span>
+                    </div>
+                    
+                  </div>
+
+                </tabset>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

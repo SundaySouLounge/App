@@ -1,0 +1,183 @@
+
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<div class="animated fadeIn">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    {{util.translate('Event Details')}}
+                    <div class="card-header-actions" *ngIf="loaded">
+                        <button type="link" class="btn btn-primary" (click)="toggleEditMode()">{{util.translate('Modify')}}
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="!loaded"
+                        style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                        <div class="loader">{{util.translate('Loading...')}} </div>
+                    </div>
+                    <div class="main_content_div" *ngIf="loaded">
+                        <p class="titles"> {{util.translate('Venue Details')}} </p>
+                        <div class="card_div">
+                            <div class="resto_detail">
+                                <div class="back_image"
+                                    [ngStyle]="{'background-image':'url('+api.imageUrl+userCover+'),url(assets/img/dummy.jpeg)'}">
+                                </div>
+                                <div style="margin-left: 10px;">
+                                    <p class="res_name">{{userName}}</p>
+                                    <p class="res_name">{{userEmail}}</p>
+                                    <p class="res_location">{{userMobile}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="titles"> {{util.translate('Dj / Artist Details')}} </p>
+                        <div class="card_div">
+                            <div class="resto_detail">
+                                <div class="back_image"
+                                    [ngStyle]="{'background-image':'url('+api.imageUrl+freelancerCover+'),url(assets/img/dummy.jpeg)'}">
+                                </div>
+                                <div style="margin-left: 10px;">
+                                    <p class="res_name">{{freelancerName}}</p>
+                                    <p class="res_location">{{freelancerEmail}}</p>
+                                    <p class="res_location">{{freelancerMobile}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="titles"> {{util.translate('Appointments')}} </p>
+                        <div class="desc_div">
+                            <div class="border_bottom">
+                              <p class="items-billing">
+                                <span> {{util.translate('Performance Date')}} </span>
+                                <span *ngIf="util.cside =='left'">
+                                  <input type="text" [(ngModel)]="save_date" />
+                                </span>
+                                <span *ngIf="util.cside =='right'">
+                                </span>
+                              </p>
+                              <p class="items-billing">
+                                <span> {{util.translate('Musician')}} </span>
+                                <span *ngIf="util.cside =='left'">
+                                     {{freelancerName}}
+                                </span>
+                                <span *ngIf="util.cside =='right'">
+                                    {{distance_cost}} {{util.currecny}}
+                                </span>
+                             </p>
+                              <p class="items-billing">
+                                <span> {{util.translate('Set Time(s)')}} </span>
+                                <span *ngIf="util.cside =='left'">
+                                  <input type="text" [(ngModel)]="slot" />
+                                </span>
+                                <span *ngIf="util.cside =='right'">
+                                  <input type="text" [(ngModel)]="serviceTax" />
+                                </span>
+                              </p>
+                              <p class="items-billing">
+                                <span> {{util.translate('Price')}} </span>
+                                <span *ngIf="util.cside =='left'">
+                                    <input type="text" [(ngModel)]="total" />
+                                </span>
+                                <span *ngIf="util.cside =='right'">
+                                    <input type="text" [(ngModel)]="wallet_price" />
+                                </span>
+                            </p>
+                            </div>
+                          </div>
+                          
+
+                        <div class="flex_div">
+                            <p class="values"> {{util.translate('More Info')}} </p>
+                        </div>
+                        <div class="flex_div">
+                            <p >
+                                <i class="fa fa-location-arrow fa-lg"></i>
+                                {{notes}}
+                            </p>
+
+                        </div>
+                        <div class="hr_line_div"></div>
+                        <div class="flex_div">
+                            <p class="values"> {{util.translate('Conversation')}} </p>
+                        </div>
+                        <div class="flex_div">
+                            <p >
+                                <i class="fa fa-location-arrow fa-lg"></i>
+                                {{serviceTax}}
+                            </p>
+
+                        </div>
+                        <p class="titles"> {{util.translate('Basic Details')}} </p>
+                        <div class="flex_div">
+                            <p> {{util.translate('Appointments ID')}} </p>
+                            <p class="values">{{id}}</p>
+                        </div>
+
+                        <div class="flex_div">
+                            <p> {{util.translate('Payment Method')}} </p>
+                            <p class="values"> {{pay_method}}  </p>
+                        </div>
+
+                        <div class="flex_div">
+                            <p> {{util.translate('Status')}} </p>
+                            <p class="values"> {{status}} </p>
+                        </div>
+
+                        <div class="hr_line_div"></div>
+
+                        <div class="card_div2">
+                            <div class="personal_detail">
+                                <div style="display: flex;">
+
+                                    <i class="fa fa-phone fa-lg"></i> &nbsp;&nbsp;
+                                    <p class="res_name">{{userMobile}}</p>
+                                </div>
+                                <div>
+                                    <button type="link" (click)="call()"
+                                        class="btn btn-primary">{{util.translate('Call')}} </button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr_line_div"></div>
+
+                        <div class="card_div2">
+                            <div class="personal_detail">
+                                <div style="display: flex;">
+
+                                    <i class="fa fa-envelope-open fa-lg"></i>&nbsp;&nbsp;
+                                    <p class="res_name">{{userEmail}}</p>
+                                </div>
+                                <div>
+                                    <button type="link" (click)="email()"
+                                        class="btn btn-primary">{{util.translate('Email')}} </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer" *ngIf="loaded">
+
+
+                    <div class="status_div" *ngIf="payName !='COD'">
+                        <select id="ccyear" class="form-control" [(ngModel)]="changeStatusOrder">
+                            <option value="Accepted"> {{util.translate('Accepted')}}</option>
+                            <option value="pending"> {{util.translate('pending')}}</option>
+                            <option value="Declined"> {{util.translate('Declined')}}</option>
+                        </select>
+                        <button type="button" class="btn btn-sm btn-block btn-success active" *ngIf="editMode" (click)="changeOrderStatus()">
+                            {{ util.translate('Update Status') }}
+                          </button>
+                      
+                          <button type="button" class="btn btn-sm btn-block btn-success active" *ngIf="!editMode" (click)="saveChanges()">
+                            {{ util.translate('Save Changes') }}
+                          </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

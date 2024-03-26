@@ -1,0 +1,118 @@
+
+import { Component, OnInit } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
+import { ApiService } from 'src/app/services/api.service';
+import { UtilService } from 'src/app/services/util.service';
+
+@Component({
+  selector: 'app-freelancer-appointments',
+  templateUrl: './freelancer-appointments.component.html',
+  styleUrls: ['./freelancer-appointments.component.scss']
+})
+export class FreelancerAppointmentsComponent implements OnInit {
+  dummy = Array(5);
+  list: any[] = [];
+  dummyList: any[] = [];
+  page: number = 1;
+  orderStatusNames = [
+    this.util.translate('Created'), // 0
+    this.util.translate('Accepted'), // 1
+    this.util.translate('Rejected'), // 2
+    this.util.translate('Ongoing'), // 3
+    this.util.translate('Completed'), // 4
+    this.util.translate('Cancelled by user'), // 5
+    this.util.translate('Refund'), // 6
+    this.util.translate('Delayed'), // 7
+    this.util.translate('Pending Payments'), // 8
+  ];
+  paymentName = [
+    this.util.translate('NA'),
+    this.util.translate('COD'),
+    this.util.translate('Stripe'),
+    this.util.translate('PayPal'),
+    this.util.translate('Paytm'),
+    this.util.translate('Razorpay'),
+    this.util.translate('Instamojo'),
+    this.util.translate('Paystack'),
+    this.util.translate('Flutterwave')
+  ];
+  constructor(
+    public util: UtilService,
+    public api: ApiService,
+    private router: Router
+  ) {
+    this.getAll();
+  }
+
+  getAll() {
+    this.list = [];
+    this.dummy = Array(5);
+    this.api.get_private('v1/appoinments/getAllFreelancerAppointments').then((data: any) => {
+      console.log(">>>>>", data);
+      this.dummy = [];
+      if (data && data.status && data.status == 200 && data.success) {
+        if (data.data.length > 0) {
+          data.data.forEach((element: any) => {
+            if (((x) => { try { JSON.parse(x); return true; } catch (e) { return false } })(element.items)) {
+              element.items = JSON.parse(element.items);
+            }
+          });
+          this.list = data.data;
+          this.dummyList = data.data;
+          this.list.sort((a, b) => {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          })
+          console.log("====", this.list);
+        }
+      }
+    }, error => {
+      this.dummy = [];
+      console.log('Error', error);
+      this.util.apiErrorHandler(error);
+    }).catch(error => {
+      this.dummy = [];
+      console.log('Err', error);
+      this.util.apiErrorHandler(error);
+    });
+  }
+
+  ngOnInit(): void {
+  }
+
+  viewData(id: any) {
+    console.log(id);
+    const param: NavigationExtras = {
+      queryParams: {
+        id: id
+      }
+    }
+    this.router.navigate(['appointments-details'], param);
+  }
+
+  deleteAppointment(id: any) {
+    this.util.show();
+    const param = {
+      id: id,
+      status: 'Deleted',
+    };
+    this.api.post_private('v1/appoinments/update', param).then((data: any) => {
+      console.log('Deleted appointment', data);
+      this.util.hide();
+      if (data && data.status == 200) {
+        // Appointment successfully deleted
+        // You can perform additional actions here if needed
+        //this.util.showSuccessToast('Appointment deleted successfully');
+        // Refresh the list of appointments after deletion
+        this.getAll();
+      } else {
+        this.util.apiErrorHandler(data);
+      }
+    }, error => {
+      console.log(error);
+      this.util.hide();
+      this.util.apiErrorHandler(error);
+    });
+  }
+
+  
+}

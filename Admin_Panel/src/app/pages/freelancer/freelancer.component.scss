@@ -1,0 +1,23 @@
+::ng-deep bs-datepicker-container {
+    z-index: 1060; /* Set the desired z-index value */
+}
+.divider {
+    height: 1px;
+    background-color: #ccc;
+    margin-top: 5px; /* Adjust this value as needed */
+    margin-bottom: 5px; /* Adjust this value as needed */
+}
+.tooltip-yellow {
+    background-color: yellow;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tooltip-yellow:hover {
+    background-color: #ffd700; /* darker yellow on hover */
+}
+
+.tooltip-yellow i {
+    color: black;
+}
