@@ -1,0 +1,33 @@
+name: Generate Code with ChatGPT
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate_code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Call ChatGPT API
+        run: |
+          curl -X POST -H "Authorization: Bearer sk-iqYgrQ2BpwyD2hhuwTEsT3BlbkFJC9esIkZmRZWFJ6s0sa6I" -H "Content-Type: application/json" -d '{"prompt": "Generate code to fix the login issues for musicians and venues. The current problem is that users are experiencing difficulties logging in, and the app displays a \"User Not Found\" error after logout. Identify the root cause of the issue and provide a solution to ensure smooth login functionality for both musicians and venues."}' https://api.openai.com/v1/completions
+
+      - name: Save Generated Code
+        run: |
+          # Process the response from the ChatGPT API and save the generated code to a file
+
+      - name: Add Changes
+        run: git add .
+
+      - name: Commit Changes
+        run: git commit -m "Add generated code"
+
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
