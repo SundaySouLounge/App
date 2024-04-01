@@ -24,12 +24,9 @@ jobs:
       - name: Commit Changes
         run: git commit -m "Add code changes"
 
-      - name: - Call OpenAI API
-
+      - name: Call OpenAI API
         run: |
-          # Replace this placeholder command with your actual command to call the OpenAI API
-          # Example command:
-          # curl -X POST -H "Authorization: Bearer sk-iqYgrQ2BpwyD2hhuwTEsT3BlbkFJC9esIkZmRZWFJ6s0sa6I" -H "Content-Type: application/json" -d '{"text": "Your text here"}' https://api.openai.com/v1/complete
+          curl -X POST -H "Authorization: Bearer sk-iqYgrQ2BpwyD2hhuwTEsT3BlbkFJC9esIkZmRZWFJ6s0sa6I" -H "Content-Type: application/json" -d '{"text": "Generate code to fix the login issues for musicians and venues. The current problem is that users are experiencing difficulties logging in, and the app displays a \"User Not Found\" error after logout. Identify the root cause of the issue and provide a solution to ensure smooth login functionality for both musicians and venues."}' https://api.openai.com/v1/complete
 
       - name: Push Changes
         uses: ad-m/github-push-action@master
