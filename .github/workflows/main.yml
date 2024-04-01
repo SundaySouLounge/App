@@ -1,0 +1,30 @@
+name: Push Code to GitHub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Up Git
+        run: |
+          git config --global user.email "admin@elite-artists.com"
+          git config --global user.name "Elite Artists"
+
+      - name: Add Changes
+        run: git add .
+
+      - name: Commit Changes
+        run: git commit -m "Add code changes"
+
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
