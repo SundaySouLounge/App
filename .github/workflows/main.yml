@@ -1,4 +1,4 @@
-name: Push Code to GitHub
+name: Push Code to GitHub TEST
 
 on:
   push:
