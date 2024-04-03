@@ -23,12 +23,12 @@ jobs:
 
       - name: Generate Code
         run: |
-          echo "Generate code for the prompt" | openai api completions.create --model "text-davinci-002" --temperature 0.7 --max-tokens 100 --api-key ${{ secrets.OPENAI_API_KEY }} > generated_code.py
+          echo "Generate code using ChatGPT" | openai api completions.create --model "text-davinci-002" --temperature 0.7 --max-tokens 100 --api-key ${{ secrets.OPENAI_API_KEY }} > generated_code.py
 
       - name: Commit and Push Changes
         run: |
           git config --global user.email "admin@elite-artists.com"
           git config --global user.name "EliteArtists"
-          git add .
+          git add generated_code.py
           git commit -m "Generated code by ChatGPT"
           git push
