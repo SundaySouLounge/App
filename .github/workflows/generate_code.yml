@@ -1,0 +1,36 @@
+name: Generate and Push Code
+
+on:
+  push:
+    branches:
+      - main # Or the branch you want to trigger this on
+
+jobs:
+  generate_and_push_code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: pip install openai
+
+      - name: Generate Code
+        run: |
+          # Call ChatGPT API to generate code
+          # Example:
+          echo "print('Hello, world!')" | openai api completions.create --engine text-davinci-002 --temperature 0.7 --max_tokens 100 > generated_code.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "admin@elite-artists.com"
+          git config --global user.name "EliteArtists"
+          git add .
+          git commit -m "Generated code by ChatGPT"
+          git push
