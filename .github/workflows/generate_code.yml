@@ -23,7 +23,7 @@ jobs:
 
       - name: Generate Code
         run: |
-          echo "Generate code for the prompt" | openai api completions.create --model "davinci" --temperature 0.7 --max-tokens 100 > generated_code.py
+          echo "Generate code for the prompt" | openai api completions.create --model "davinci" --temperature 1.0 --max-tokens 500 > generated_code.py
 
       - name: Commit and Push Changes
         run: |
