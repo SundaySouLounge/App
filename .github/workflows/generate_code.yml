@@ -1,4 +1,4 @@
-name: Generate and Push Code
+name: Generate and Push Code Test
 
 on:
   push:
