@@ -1,0 +1,39 @@
+name: Generate and Push Code
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate_and_push_code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14' # Using the LTS version of Node.js
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: pip install openai
+
+      - name: Generate Code
+        run: |
+          echo "Generate code using ChatGPT" | openai api completions.create --model "text-davinci-002" --temperature 1.0 --max-tokens 500 --api-key "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" > generated_code.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "admin@elite-artists.com"
+          git config --global user.name "EliteArtists"
+          git add generated_code.py
+          git commit -m "Generated code by ChatGPT"
+          git push
