@@ -1,0 +1,28 @@
+name: ChatGPT to GitHub
+
+on:
+  workflow_dispatch: # Manually trigger the workflow
+  push:
+    branches:
+      - main # Adjust branch name as needed
+
+jobs:
+  generate_and_commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Generate code with ChatGPT
+        run: |
+          # Replace this with the actual command to call the ChatGPT API
+          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer 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" -d '{"prompt": "Generate code using ChatGPT"}' https://api.openai.com/v1/engines/davinci-codex/completions > generated_code.py
+
+      - name: Commit and push
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add generated_code.py
+          git commit -m "Add generated code"
+          git push
