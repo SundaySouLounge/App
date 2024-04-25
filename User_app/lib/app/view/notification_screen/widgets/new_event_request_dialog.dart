@@ -99,7 +99,7 @@ class NewEventRequestDialog extends StatelessWidget {
               onPressed: () {
                 controller.updateEventContractStatus(
                     'Deleted', notificationData.id!);
-                    controller.onCancelSubmit();
+                controller.onCancelSubmit();
                 Navigator.of(context).pop();
                 // navigate to'
                 // Navigator.pushReplacement(
@@ -232,14 +232,16 @@ class NewEventRequestDialog extends StatelessWidget {
         ];
 
         double timeone = timeoneString.isNotEmpty
-    ? double.parse(timeoneString.split(':')[0]) + double.parse(timeoneString.split(':')[1]) / 60
-    : 0.0;
+            ? double.parse(timeoneString.split(':')[0]) +
+                double.parse(timeoneString.split(':')[1]) / 60
+            : 0.0;
 
 // Ensure the resulting time doesn't go below 0:00
-timeone = timeone - 1.00 < 0.0 ? 0.0 : timeone - 1.00;
+        timeone = timeone - 1.00 < 0.0 ? 0.0 : timeone - 1.00;
 
 // Convert the result back to HH:mm format using only floating-point division
-String resultTime = '${(timeone.floor()).toString().padLeft(2, '0')}:${((timeone % 1) * 60).toInt().toString().padLeft(2, '0')}';
+        String resultTime =
+            '${(timeone.floor()).toString().padLeft(2, '0')}:${((timeone % 1) * 60).toInt().toString().padLeft(2, '0')}';
 
         return Dialog.fullscreen(
           child: SingleChildScrollView(
@@ -424,21 +426,20 @@ String resultTime = '${(timeone.floor()).toString().padLeft(2, '0')}:${((timeone
                             ],
                           ),
                           const SizedBox(width: 10),
-                          
                           Expanded(
-                          child: Text(
-                            controller.eventContractData!.venueAddress.toString(),
-                            style: const TextStyle(
-                              color: ThemeProvider.appColor,
-                              fontFamily: 'bold',
-                              fontSize: 14,
-                              decoration: TextDecoration.none,
+                            child: Text(
+                              controller.eventContractData!.venueAddress
+                                  .toString(),
+                              style: const TextStyle(
+                                color: ThemeProvider.appColor,
+                                fontFamily: 'bold',
+                                fontSize: 14,
+                                decoration: TextDecoration.none,
+                              ),
+                              textAlign:
+                                  TextAlign.right, // Align text to the right
                             ),
-                            textAlign: TextAlign.right, // Align text to the right
-                          
-                          ),
-                        )
-
+                          )
                         ],
                       ),
                       const SizedBox(height: 10),
@@ -622,7 +623,7 @@ String resultTime = '${(timeone.floor()).toString().padLeft(2, '0')}:${((timeone
                           ),
                           const SizedBox(width: 10),
                           Text(
-                           resultTime, // Convert the result back to String for Text widget
+                            resultTime, // Convert the result back to String for Text widget
                             style: const TextStyle(
                               color: ThemeProvider.appColor,
                               fontFamily: 'bold',
@@ -949,9 +950,9 @@ String resultTime = '${(timeone.floor()).toString().padLeft(2, '0')}:${((timeone
                                     context, controller, notificationData);
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Colors
+                                backgroundColor: Colors
                                     .red, // Set the background color to red
-                                onPrimary:
+                                foregroundColor:
                                     Colors.white, // Set the text color to white
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
@@ -980,9 +981,9 @@ String resultTime = '${(timeone.floor()).toString().padLeft(2, '0')}:${((timeone
                                 controller.onChat();
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Colors
+                                backgroundColor: Colors
                                     .white, // Set the background color to white
-                                onPrimary:
+                                foregroundColor:
                                     Colors.black, // Set the text color to black
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
@@ -1010,9 +1011,9 @@ String resultTime = '${(timeone.floor()).toString().padLeft(2, '0')}:${((timeone
                                 _selectDate(context, controller);
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Colors
+                                backgroundColor: Colors
                                     .white, // Set the background color to white
-                                onPrimary:
+                                foregroundColor:
                                     Colors.black, // Set the text color to black
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(

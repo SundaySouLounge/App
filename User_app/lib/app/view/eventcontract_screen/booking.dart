@@ -221,7 +221,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
-                                                      primary: ThemeProvider
+                                                      backgroundColor: ThemeProvider
                                                           .appColor, // Set the background color
                                                     ),
                                                     child: Text(
@@ -569,9 +569,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               ? Column(
                                   children: List.generate(
                                     value.appointmentListOld.length,
-                                    (index) =>
-                                    
-                                     Container(
+                                    (index) => Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 14, vertical: 8),
                                       margin: const EdgeInsets.symmetric(
@@ -693,7 +691,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    primary: ThemeProvider
+                                                    backgroundColor: ThemeProvider
                                                         .appColor, // Set the background color
                                                   ),
                                                   child: Text(

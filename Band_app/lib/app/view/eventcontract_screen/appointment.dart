@@ -27,7 +27,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   @override
   Widget build(BuildContext context) {
-     final item = Get.put(NotificationController(parser: Get.find()));
+    final item = Get.put(NotificationController(parser: Get.find()));
     return GetBuilder<AppointmentController>(
       builder: (value) {
         return Scaffold(
@@ -42,19 +42,19 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   style: ThemeProvider.titleStyle,
                 ),
                 actions: [
-            IconButton(
-          icon: Icon(Icons.notifications),
-         onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NotificationsScreen(),
+                  IconButton(
+                    icon: Icon(Icons.notifications),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NotificationsScreen(),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-        ),
                   // Positioned(
-                          
+
                   //           child: GetBuilder<NotificationController>(
                   //             builder: (controller) {
                   //               final notificationCount = controller.notificationCount;
@@ -83,7 +83,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   //             },
                   //           ),
                   //         ),
-          ],
+                ],
                 bottom: TabBar(
                   controller: value.tabController,
                   unselectedLabelColor: ThemeProvider.blackColor,
@@ -150,22 +150,26 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                           ], // Set the border radius to make it rounded
                                         ),
                                         child: InkWell(
-                                         onTap: () async {
+                                          onTap: () async {
                                             Get.dialog(
                                                 NewEventRequestDialogPending(
                                                     eventContractData:
                                                         value.appointmentList[
                                                             index]));
                                           },
-                                         child: Column(
+                                          child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.stretch,
                                             children: [
-                                               Row(
+                                              Row(
                                                 children: [
                                                   Expanded(
                                                     child: Text(
-                                                      value.appointmentList[index].nameVenue.toString(),
+                                                      value
+                                                          .appointmentList[
+                                                              index]
+                                                          .nameVenue
+                                                          .toString(),
                                                       style: const TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 18,
@@ -183,75 +187,89 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                   ),
                                                 ],
                                               ),
-                                               const SizedBox(height: 2),
+                                              const SizedBox(height: 2),
 
                                               Row(
-                                              children: [
-                                               
-                                                Text(
-                                                  value.appointmentList[index].date != null
-                                                    ? DateFormat('MMMM dd, yyyy').format(value.appointmentList[index].date!)
-                                                    : '',
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 10),
-                                                
-                                              ],
-                                            ),
-
-                                             const SizedBox(height: 10),
-                                             
-                                              // 2.6 Status
-                                            Row(
-                                             children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "STATUS: ".tr,
+                                                    value.appointmentList[index]
+                                                                .date !=
+                                                            null
+                                                        ? DateFormat(
+                                                                'MMMM dd, yyyy')
+                                                            .format(value
+                                                                .appointmentList[
+                                                                    index]
+                                                                .date!)
+                                                        : '',
                                                     style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18,
-                                                     // fontFamily: "bold",
+                                                        color: Colors.grey,
+                                                        fontSize: 14),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                ],
+                                              ),
+
+                                              const SizedBox(height: 10),
+
+                                              // 2.6 Status
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "STATUS: ".tr,
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 18,
+                                                            // fontFamily: "bold",
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          value
+                                                              .appointmentList[
+                                                                  index]
+                                                              .status
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.green,
+                                                            fontSize: 18,
+                                                            // fontFamily: "bold",
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  Text(
-                                                    value.appointmentList[index].status.toString(),
-                                                    style: const TextStyle(
-                                                      color: Colors.green,
-                                                      fontSize: 18,
-                                                     // fontFamily: "bold",
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      Get.dialog(
+                                                          NewEventRequestDialogPending(
+                                                              eventContractData:
+                                                                  value.appointmentList[
+                                                                      index]));
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor: ThemeProvider
+                                                          .appColor, // Set the background color
+                                                    ),
+                                                    child: Text(
+                                                      "View",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        // fontFamily: "bold",
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                Get.dialog(
-                                                NewEventRequestDialogPending(
-                                                    eventContractData:
-                                                        value.appointmentList[
-                                                            index]));
-                                               },
-                                              style: ElevatedButton.styleFrom(
-                                                primary: ThemeProvider.appColor, // Set the background color
-                                              ),
-                                              child: Text(
-                                                "View",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                 // fontFamily: "bold",
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                             ],
                                           ),
                                         ),
@@ -281,157 +299,192 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         ),
                       ),
                       SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        child: value.appointmentList.isNotEmpty
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: List.generate(
-                                    value.appointmentList.length, (index) {
-                                  final reversedIndex =
-                                      value.appointmentList.length - 1 - index; // Calculate reversed index
-                                  if (value.appointmentList[reversedIndex].status ==
-                                      "pending") {
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 14, vertical: 8),
-                                      margin: const EdgeInsets.symmetric(vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: ThemeProvider.whiteColor,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(8),
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: ThemeProvider.blackColor.withOpacity(0.2),
-                                            offset: const Offset(0, 1),
-                                            blurRadius: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: value.appointmentList.isNotEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children:
+                                      List.generate(
+                                              value.appointmentList.length,
+                                              (index) {
+                                    final reversedIndex =
+                                        value.appointmentList.length -
+                                            1 -
+                                            index; // Calculate reversed index
+                                    if (value.appointmentList[reversedIndex]
+                                            .status ==
+                                        "pending") {
+                                      return Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 14, vertical: 8),
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: ThemeProvider.whiteColor,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(8),
                                           ),
-                                        ],
-                                      ),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          Get.dialog(
-                                              NewEventRequestDialogPending(
-                                                  eventContractData: value
-                                                      .appointmentList[reversedIndex]));
-                                        },
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    value.appointmentList[reversedIndex].nameVenue
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18,
-                                                    //  fontFamily: "bold",
-                                                    ),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "£ ${value.appointmentList[reversedIndex].fee.toString()}",
-                                                  style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 18,
-                                                   // fontFamily: "bold",
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  value.appointmentList[reversedIndex].date != null
-                                                      ? DateFormat('MMMM dd, yyyy').format(value
-                                                          .appointmentList[reversedIndex].date!)
-                                                      : '',
-                                                  style: const TextStyle(
-                                                      color: Colors.grey, fontSize: 14),
-                                                ),
-                                                const SizedBox(width: 10),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        "STATUS: ".tr,
-                                                        style: const TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 18,
-                                                        //  fontFamily: "bold",
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        value.appointmentList[reversedIndex].status
-                                                            .toString(),
-                                                        style: const TextStyle(
-                                                          color: Colors.green,
-                                                          fontSize: 18,
-                                                         // fontFamily: "bold",
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                ElevatedButton(
-                                                  onPressed: () async {
-                                                    Get.dialog(
-                                                        NewEventRequestDialogPending(
-                                                            eventContractData: value
-                                                                .appointmentList[reversedIndex]));
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                    primary: ThemeProvider
-                                                        .appColor, // Set the background color
-                                                  ),
-                                                  child: Text(
-                                                    "View",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                    //  fontFamily: "bold",
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: ThemeProvider.blackColor
+                                                  .withOpacity(0.2),
+                                              offset: const Offset(0, 1),
+                                              blurRadius: 3,
                                             ),
                                           ],
                                         ),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            Get.dialog(
+                                                NewEventRequestDialogPending(
+                                                    eventContractData:
+                                                        value.appointmentList[
+                                                            reversedIndex]));
+                                          },
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      value
+                                                          .appointmentList[
+                                                              reversedIndex]
+                                                          .nameVenue
+                                                          .toString(),
+                                                      style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 18,
+                                                        //  fontFamily: "bold",
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "£ ${value.appointmentList[reversedIndex].fee.toString()}",
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 18,
+                                                      // fontFamily: "bold",
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    value
+                                                                .appointmentList[
+                                                                    reversedIndex]
+                                                                .date !=
+                                                            null
+                                                        ? DateFormat(
+                                                                'MMMM dd, yyyy')
+                                                            .format(value
+                                                                .appointmentList[
+                                                                    reversedIndex]
+                                                                .date!)
+                                                        : '',
+                                                    style: const TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 14),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "STATUS: ".tr,
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 18,
+                                                            //  fontFamily: "bold",
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          value
+                                                              .appointmentList[
+                                                                  reversedIndex]
+                                                              .status
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.green,
+                                                            fontSize: 18,
+                                                            // fontFamily: "bold",
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      Get.dialog(NewEventRequestDialogPending(
+                                                          eventContractData: value
+                                                                  .appointmentList[
+                                                              reversedIndex]));
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor: ThemeProvider
+                                                          .appColor, // Set the background color
+                                                    ),
+                                                    child: Text(
+                                                      "View",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        //  fontFamily: "bold",
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    } else
+                                      return Container();
+                                  })
+                                          .toList()
+                                          .reversed
+                                          .toList(), // Reverse the list order
+                                )
+                              : Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset('assets/images/no-data.png',
+                                          width: 60, height: 60),
+                                      const SizedBox(height: 30),
+                                      Text(
+                                        'No New Contracts Found!'.tr,
+                                        style: const TextStyle(
+                                            fontFamily: 'bold',
+                                            color: ThemeProvider.whiteColor),
                                       ),
-                                    );
-                                  } else
-                                    return Container();
-                                }).toList().reversed.toList(), // Reverse the list order
-                              )
-                            : Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.asset('assets/images/no-data.png',
-                                        width: 60, height: 60),
-                                    const SizedBox(height: 30),
-                                    Text(
-                                      'No New Contracts Found!'.tr,
-                                      style: const TextStyle(
-                                          fontFamily: 'bold', color: ThemeProvider.whiteColor),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
+                        ),
                       ),
-                    ),
                       SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -465,100 +518,116 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                         //           .appointmentListOld[index]));
                                         // },
                                         child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            children: [
-                                               Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      value.appointmentListOld[index].nameVenue.toString(),
-                                                      style: const TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 18,
-                                                      //  fontFamily: "bold",
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "£ ${value.appointmentListOld[index].fee.toString()}",
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    value
+                                                        .appointmentListOld[
+                                                            index]
+                                                        .nameVenue
+                                                        .toString(),
                                                     style: const TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 18,
-                                                     // fontFamily: "bold",
+                                                      //  fontFamily: "bold",
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                               const SizedBox(height: 2),
-
-                                              Row(
-                                              children: [
-                                               
+                                                ),
                                                 Text(
-                                                  value.appointmentListOld[index].date != null
-                                                    ? DateFormat('MMMM dd, yyyy').format(value.appointmentListOld[index].date!)
-                                                    : '',
+                                                  "£ ${value.appointmentListOld[index].fee.toString()}",
                                                   style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14
+                                                    color: Colors.black,
+                                                    fontSize: 18,
+                                                    // fontFamily: "bold",
                                                   ),
                                                 ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 2),
+
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  value
+                                                              .appointmentListOld[
+                                                                  index]
+                                                              .date !=
+                                                          null
+                                                      ? DateFormat(
+                                                              'MMMM dd, yyyy')
+                                                          .format(value
+                                                              .appointmentListOld[
+                                                                  index]
+                                                              .date!)
+                                                      : '',
+                                                  style: const TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 14),
+                                                ),
                                                 const SizedBox(width: 10),
-                                                
                                               ],
                                             ),
 
-                                             const SizedBox(height: 10),
-                                             
-                                              // 2.6 Status
+                                            const SizedBox(height: 10),
+
+                                            // 2.6 Status
                                             Row(
-                                             children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "STATUS: ".tr,
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18,
-                                                     // fontFamily: "bold",
-                                                    ),
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "STATUS: ".tr,
+                                                        style: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 18,
+                                                          // fontFamily: "bold",
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        value
+                                                            .appointmentListOld[
+                                                                index]
+                                                            .status
+                                                            .toString(),
+                                                        style: const TextStyle(
+                                                          color: Colors.green,
+                                                          fontSize: 18,
+                                                          //  fontFamily: "bold",
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Text(
-                                                    value.appointmentListOld[index].status.toString(),
-                                                    style: const TextStyle(
-                                                      color: Colors.green,
-                                                      fontSize: 18,
-                                                    //  fontFamily: "bold",
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                                // ElevatedButton(
+                                                //   onPressed: () async {
+                                                //     Get.dialog(NewEventRequestDialog(
+                                                //   eventContractData: value
+                                                //       .appointmentListOld[index]));
+                                                //    },
+                                                //   style: ElevatedButton.styleFrom(
+                                                //     primary: ThemeProvider.appColor, // Set the background color
+                                                //   ),
+                                                //   child: Text(
+                                                //     "View",
+                                                //     style: TextStyle(
+                                                //       color: Colors.white,
+                                                //       fontSize: 18,
+                                                //       fontFamily: "bold",
+                                                //     ),
+                                                //   ),
+                                                // ),
+                                              ],
                                             ),
-                                            // ElevatedButton(
-                                            //   onPressed: () async {
-                                            //     Get.dialog(NewEventRequestDialog(
-                                            //   eventContractData: value
-                                            //       .appointmentListOld[index]));
-                                            //    },
-                                            //   style: ElevatedButton.styleFrom(
-                                            //     primary: ThemeProvider.appColor, // Set the background color
-                                            //   ),
-                                            //   child: Text(
-                                            //     "View",
-                                            //     style: TextStyle(
-                                            //       color: Colors.white,
-                                            //       fontSize: 18,
-                                            //       fontFamily: "bold",
-                                            //     ),
-                                            //   ),
-                                            // ),
                                           ],
                                         ),
-                                            ],
-                                          ),
                                       ),
                                     ),
                                   ),

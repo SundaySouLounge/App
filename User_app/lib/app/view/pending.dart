@@ -8,7 +8,6 @@ import 'package:app_user/app/view/eventcontract_screen/widgets/new_event_request
 import 'package:app_user/app/view/eventcontract_screen/widgets/new_event_request_pending.dart';
 import 'package:skeletons/skeletons.dart';
 
-
 class PendingScreen extends StatefulWidget {
   const PendingScreen({Key? key}) : super(key: key);
 
@@ -88,8 +87,11 @@ class _PendingScreenState extends State<PendingScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: List.generate(
                                       value.appointmentList.length, (index) {
-                                    if (value.appointmentList[index].suggester ==
-                                        "owner" && value.appointmentList[index].status == "pending")  {
+                                    if (value.appointmentList[index]
+                                                .suggester ==
+                                            "owner" &&
+                                        value.appointmentList[index].status ==
+                                            "pending") {
                                       return Container(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 14, vertical: 8),
@@ -120,16 +122,19 @@ class _PendingScreenState extends State<PendingScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.stretch,
                                             children: [
-
-                                               Row(
+                                              Row(
                                                 children: [
                                                   Expanded(
                                                     child: Text(
-                                                      value.appointmentList[index].musician.toString(),
+                                                      value
+                                                          .appointmentList[
+                                                              index]
+                                                          .musician
+                                                          .toString(),
                                                       style: const TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 18,
-                                                      //  fontFamily: "bold",
+                                                        //  fontFamily: "bold",
                                                       ),
                                                     ),
                                                   ),
@@ -138,82 +143,96 @@ class _PendingScreenState extends State<PendingScreen> {
                                                     style: const TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 18,
-                                                     // fontFamily: "bold",
+                                                      // fontFamily: "bold",
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                               const SizedBox(height: 2),
+                                              const SizedBox(height: 2),
 
                                               Row(
-                                              children: [
-                                               
-                                                Text(
-                                                  value.appointmentList[index].date != null
-                                                    ? DateFormat('MMMM dd, yyyy').format(value.appointmentList[index].date!)
-                                                    : '',
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 10),
-                                                
-                                              ],
-                                            ),
-
-                                             const SizedBox(height: 10),
-                                             
-                                              // 2.6 Status
-                                            Row(
-                                             children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "STATUS: ".tr,
+                                                    value.appointmentList[index]
+                                                                .date !=
+                                                            null
+                                                        ? DateFormat(
+                                                                'MMMM dd, yyyy')
+                                                            .format(value
+                                                                .appointmentList[
+                                                                    index]
+                                                                .date!)
+                                                        : '',
                                                     style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18,
-                                                      //fontFamily: "bold",
+                                                        color: Colors.grey,
+                                                        fontSize: 14),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                ],
+                                              ),
+
+                                              const SizedBox(height: 10),
+
+                                              // 2.6 Status
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "STATUS: ".tr,
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 18,
+                                                            //fontFamily: "bold",
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          value
+                                                              .appointmentList[
+                                                                  index]
+                                                              .status
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.green,
+                                                            fontSize: 18,
+                                                            // fontFamily: "bold",
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  Text(
-                                                    value.appointmentList[index].status.toString(),
-                                                    style: const TextStyle(
-                                                      color: Colors.green,
-                                                      fontSize: 18,
-                                                     // fontFamily: "bold",
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      Get.dialog(
+                                                          NewEventRequestDialogPending(
+                                                        eventContractData: value
+                                                                .appointmentList[
+                                                            index],
+                                                      ));
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor: ThemeProvider
+                                                          .appColor, // Set the background color
+                                                    ),
+                                                    child: Text(
+                                                      "View",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        // fontFamily: "bold",
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                Get.dialog(
-                                                    NewEventRequestDialogPending(
-                                                  eventContractData:
-                                                      value.appointmentList[index],
-                                                ));
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                primary: ThemeProvider.appColor, // Set the background color
-                                              ),
-                                              child: Text(
-                                                "View",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                 // fontFamily: "bold",
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 15),
-                                      
+                                              const SizedBox(height: 15),
                                             ],
                                           ),
                                         ),
@@ -252,8 +271,11 @@ class _PendingScreenState extends State<PendingScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: List.generate(
                                       value.appointmentList.length, (index) {
-                                    if (value.appointmentList[index].suggester ==
-                                        "user" && value.appointmentList[index].status == "pending") {
+                                    if (value.appointmentList[index]
+                                                .suggester ==
+                                            "user" &&
+                                        value.appointmentList[index].status ==
+                                            "pending") {
                                       return Container(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 14, vertical: 8),
@@ -272,7 +294,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                 blurRadius: 3),
                                           ], // Set the border radius to make it rounded
                                         ),
-                                         child: InkWell(
+                                        child: InkWell(
                                           onTap: () async {
                                             Get.dialog(
                                                 NewEventRequestDialogPending(
@@ -284,16 +306,19 @@ class _PendingScreenState extends State<PendingScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.stretch,
                                             children: [
-
-                                               Row(
+                                              Row(
                                                 children: [
                                                   Expanded(
                                                     child: Text(
-                                                      value.appointmentList[index].musician.toString(),
+                                                      value
+                                                          .appointmentList[
+                                                              index]
+                                                          .musician
+                                                          .toString(),
                                                       style: const TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 18,
-                                                     //   fontFamily: "bold",
+                                                        //   fontFamily: "bold",
                                                       ),
                                                     ),
                                                   ),
@@ -302,81 +327,95 @@ class _PendingScreenState extends State<PendingScreen> {
                                                     style: const TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 18,
-                                                     // fontFamily: "bold",
+                                                      // fontFamily: "bold",
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                               const SizedBox(height: 2),
+                                              const SizedBox(height: 2),
 
                                               Row(
-                                              children: [
-                                               
-                                                Text(
-                                                  value.appointmentList[index].date != null
-                                                    ? DateFormat('MMMM dd, yyyy').format(value.appointmentList[index].date!)
-                                                    : '',
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 14
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 10),
-                                                
-                                              ],
-                                            ),
-
-                                             const SizedBox(height: 10),
-                                             
-                                              // 2.6 Status
-                                            Row(
-                                             children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "STATUS: ".tr,
+                                                    value.appointmentList[index]
+                                                                .date !=
+                                                            null
+                                                        ? DateFormat(
+                                                                'MMMM dd, yyyy')
+                                                            .format(value
+                                                                .appointmentList[
+                                                                    index]
+                                                                .date!)
+                                                        : '',
                                                     style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18,
-                                                     // fontFamily: "bold",
+                                                        color: Colors.grey,
+                                                        fontSize: 14),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                ],
+                                              ),
+
+                                              const SizedBox(height: 10),
+
+                                              // 2.6 Status
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "STATUS: ".tr,
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 18,
+                                                            // fontFamily: "bold",
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          value
+                                                              .appointmentList[
+                                                                  index]
+                                                              .status
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.green,
+                                                            fontSize: 18,
+                                                            // fontFamily: "bold",
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  Text(
-                                                    value.appointmentList[index].status.toString(),
-                                                    style: const TextStyle(
-                                                      color: Colors.green,
-                                                      fontSize: 18,
-                                                     // fontFamily: "bold",
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      Get.dialog(
+                                                          NewEventRequestDialogPending(
+                                                        eventContractData: value
+                                                                .appointmentList[
+                                                            index],
+                                                      ));
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor: ThemeProvider
+                                                          .appColor, // Set the background color
+                                                    ),
+                                                    child: Text(
+                                                      "View",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        // fontFamily: "bold",
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                Get.dialog(
-                                                    NewEventRequestDialogPending(
-                                                  eventContractData:
-                                                      value.appointmentList[index],
-                                                ));
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                primary: ThemeProvider.appColor, // Set the background color
-                                              ),
-                                              child: Text(
-                                                "View",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                 // fontFamily: "bold",
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        
                                             ],
                                           ),
                                         ),
@@ -468,7 +507,7 @@ class _PendingScreenState extends State<PendingScreen> {
 
                       //                         Row(
                       //                         children: [
-                                               
+
                       //                           Text(
                       //                             value.appointmentListOld[index].date != null
                       //                               ? DateFormat('MMMM dd, yyyy').format(value.appointmentListOld[index].date!)
@@ -479,12 +518,12 @@ class _PendingScreenState extends State<PendingScreen> {
                       //                             ),
                       //                           ),
                       //                           const SizedBox(width: 10),
-                                                
+
                       //                         ],
                       //                       ),
 
                       //                        const SizedBox(height: 10),
-                                             
+
                       //                         // 2.6 Status
                       //                       Row(
                       //                        children: [

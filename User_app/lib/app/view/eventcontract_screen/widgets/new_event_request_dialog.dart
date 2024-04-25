@@ -42,7 +42,6 @@ class NewEventRequestDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<BookingController>(
       builder: (controller) {
-
         return Center(
           child: Container(
             width: MediaQuery.of(context).size.width *
@@ -214,7 +213,9 @@ class NewEventRequestDialog extends StatelessWidget {
                     //     ),
                     //   ),
                     // ),
-                    ElevatedButton(
+// FIXME: The below code is commented out to remove the Re-Book button on Archived contracts details popup to disable the rebooking feature.
+// Ross has stated that he might want to develop this feature properly in future.
+/*                    ElevatedButton(
                       onPressed: () async {
                         Navigator.of(context).pop(); // Close the popup
                         //Get.dialog(NegoDialog(eventContractData: eventContractData));
@@ -231,6 +232,7 @@ class NewEventRequestDialog extends StatelessWidget {
                       ),
                       child: const Text("Re-Book "),
                     ),
+*/
                     // ElevatedButton(
                     //   onPressed: eventContractData!.status != 'Declined'
                     //       ? () {

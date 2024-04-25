@@ -50,7 +50,7 @@ class BookingController extends GetxController
   final priceTextEditor = TextEditingController();
   final infoTextEditor = TextEditingController();
   final sharedPref = Get.find<SharedPreferencesManager>();
-  
+
   @override
   void onInit() {
     super.onInit();
@@ -65,9 +65,9 @@ class BookingController extends GetxController
   }
 
   String customFormattedDate(DateTime date) {
-  String formattedDate = DateFormat('EEEE d MMMM yyyy').format(date);
-  return formattedDate;
-}
+    String formattedDate = DateFormat('EEEE d MMMM yyyy').format(date);
+    return formattedDate;
+  }
 
   Future<void> getMyEventContracts() async {
     Response response = await parser.getMyEventContracts();
@@ -81,8 +81,16 @@ class BookingController extends GetxController
       //     .toList();
       _appointmentList = [];
       _appointmentListOld = [];
-      for (var data in body) {
-        EventContractModel appointment = EventContractModel.fromJson(data);
+
+      // Sort by date descending.
+      List sortedList = body
+          .map<EventContractModel>((item) => EventContractModel.fromJson(item))
+          .toList();
+      sortedList.sort(myDateSortComparison);
+
+      //for (var data in body) {
+//        EventContractModel appointment = EventContractModel.fromJson(data);
+      for (var appointment in sortedList) {
         if (appointment.date != null &&
             DateTime.now().compareTo(appointment.date!) == 1) {
           _appointmentListOld.add(appointment);
@@ -90,11 +98,31 @@ class BookingController extends GetxController
           _appointmentList.add(appointment);
         }
       }
-      debugPrint(jsonEncode(_appointmentList));
+//      debugPrint('Appointments list: ${jsonEncode(_appointmentList)}');
     } else {
       ApiChecker.checkApi(response);
     }
     update();
+  }
+
+  int myDateSortComparison(dynamic a, dynamic b) {
+    final propertyA = a.date;
+    final propertyB = b.date;
+
+    // Both are equal.
+    if (propertyA == null && propertyB == null) {
+      return 0;
+    }
+    // Return negative as empty date should be above other.
+    if (propertyA == null && propertyB != null) {
+      return -1;
+    }
+    // Return positive as empty date should be above other.
+    if (propertyA != null && propertyB == null) {
+      return 1;
+    }
+
+    return propertyB!.compareTo(propertyA!);
   }
 
   Future<void> getAppointmentById() async {
@@ -160,42 +188,41 @@ class BookingController extends GetxController
     update();
   }
 
- Future<void> onNegoSubmit(
-  EventContractModel eventContractData, double newFee) async {
-  double newFee = double.tryParse(priceTextEditor.text) ?? 0.0;
-  
-  // Format the date from eventContractData
-  String formattedEventDate = customFormattedDate(eventContractData.date!);
-  
-  // Concatenate old data with new data
-  String updatedBodys =
-      '${eventContractData.bodys} Venue: £ ${priceTextEditor.text} ${infoTextEditor.text} /n';
+  Future<void> onNegoSubmit(
+      EventContractModel eventContractData, double newFee) async {
+    double newFee = double.tryParse(priceTextEditor.text) ?? 0.0;
 
-  var notificationParam1 = {
-    "id": eventContractData.userId,
-    "title": "${eventContractData.venueName} $formattedEventDate",
-    "message": "Negotiating",
-  };
-  await parser.sendNotification(notificationParam1);
+    // Format the date from eventContractData
+    String formattedEventDate = customFormattedDate(eventContractData.date!);
 
-  var notificationParam2 = {
-    "id": eventContractData.individualUid ?? eventContractData.salonUid,
-    "title":
-        "${eventContractData.venueName} has negotiated the contract for $formattedEventDate",
-    "message": "Click to reply!",
-  };
-  await parser.sendNotification(notificationParam2);
+    // Concatenate old data with new data
+    String updatedBodys =
+        '${eventContractData.bodys} Venue: £ ${priceTextEditor.text} ${infoTextEditor.text} /n';
 
-  eventContractData.suggester = 'user';
-  eventContractData.fee = newFee;
+    var notificationParam1 = {
+      "id": eventContractData.userId,
+      "title": "${eventContractData.venueName} $formattedEventDate",
+      "message": "Negotiating",
+    };
+    await parser.sendNotification(notificationParam1);
 
-  // Update the bodys property
-  eventContractData.bodys = updatedBodys;
+    var notificationParam2 = {
+      "id": eventContractData.individualUid ?? eventContractData.salonUid,
+      "title":
+          "${eventContractData.venueName} has negotiated the contract for $formattedEventDate",
+      "message": "Click to reply!",
+    };
+    await parser.sendNotification(notificationParam2);
 
-  await parser.updateEventContractById(eventContractData);
-  update();
-}
+    eventContractData.suggester = 'user';
+    eventContractData.fee = newFee;
 
+    // Update the bodys property
+    eventContractData.bodys = updatedBodys;
+
+    await parser.updateEventContractById(eventContractData);
+    update();
+  }
 
   Future<void> sendNotificationOnUpdate(
       EventContractModel eventContractData, DateTime updatedDateTime) async {
@@ -233,33 +260,33 @@ class BookingController extends GetxController
     }
   }
 
- Future<void> onWithdrawalSubmit(
-    EventContractModel eventContractData, String selectedDate) async {
-  // Your existing logic
-  String formattedSelectedDate = customFormattedDate(DateTime.parse(selectedDate));
+  Future<void> onWithdrawalSubmit(
+      EventContractModel eventContractData, String selectedDate) async {
+    // Your existing logic
+    String formattedSelectedDate =
+        customFormattedDate(DateTime.parse(selectedDate));
 
-  String updatedBodys =
-      '${eventContractData.bodys} Venue: New Deadline $formattedSelectedDate /n';
-  if (eventContractData != null) {
-    var notificationParam1 = {
-      "id": eventContractData.userId,
-      "title": "You have set a deadline for ${eventContractData.musician}",
-      "message": "This job offer will disappear on $formattedSelectedDate",
-    };
-    await parser.sendNotification(notificationParam1);
-    var notificationParam2 = {
-      "id": eventContractData.individualUid ?? eventContractData.salonUid,
-      "title": "${eventContractData.venueName} has set a new deadline!",
-      "message": "This job offer will disappear on $formattedSelectedDate",
-    };
-    eventContractData.bodys = updatedBodys;
-    await parser.updateEventContractById(eventContractData);
-    await parser.sendNotification(notificationParam2);
+    String updatedBodys =
+        '${eventContractData.bodys} Venue: New Deadline $formattedSelectedDate /n';
+    if (eventContractData != null) {
+      var notificationParam1 = {
+        "id": eventContractData.userId,
+        "title": "You have set a deadline for ${eventContractData.musician}",
+        "message": "This job offer will disappear on $formattedSelectedDate",
+      };
+      await parser.sendNotification(notificationParam1);
+      var notificationParam2 = {
+        "id": eventContractData.individualUid ?? eventContractData.salonUid,
+        "title": "${eventContractData.venueName} has set a new deadline!",
+        "message": "This job offer will disappear on $formattedSelectedDate",
+      };
+      eventContractData.bodys = updatedBodys;
+      await parser.updateEventContractById(eventContractData);
+      await parser.sendNotification(notificationParam2);
 
-    update();
+      update();
+    }
   }
-}
-
 
   void onChat(EventContractModel eventContractData) {
     debugPrint('on chat');
@@ -269,8 +296,8 @@ class BookingController extends GetxController
         // parser.getUID(),
         eventContractData.userId,
         // '${parser.sharedPreferencesManager.clearKey('first_name')} ${parser.sharedPreferencesManager.clearKey('last_name')}'
-         eventContractData.musician,
-         eventContractData.individualUid,
+        eventContractData.musician,
+        eventContractData.individualUid,
       ]);
     } else {
       Get.delete<LoginController>(force: true);
@@ -316,7 +343,8 @@ class BookingController extends GetxController
 
     return false;
   }
-   Future<void> onCancelSubmit(EventContractModel? eventContractData) async {
+
+  Future<void> onCancelSubmit(EventContractModel? eventContractData) async {
     if (eventContractData != null) {
       String currentDate = customFormattedDate(DateTime.now());
 
@@ -329,7 +357,8 @@ class BookingController extends GetxController
 
       var notificationParam2 = {
         "id": eventContractData.individualUid ?? eventContractData.salonUid,
-        "title": "${eventContractData!.venueName} has withdrawn your contract for",
+        "title":
+            "${eventContractData!.venueName} has withdrawn your contract for",
         "message": "$currentDate",
       };
       await parser.sendNotification(notificationParam2);
@@ -396,7 +425,7 @@ class BookingController extends GetxController
     }
   }
 
-   Future<void> onRebook(EventContractModel? eventContractData) async {
+  Future<void> onRebook(EventContractModel? eventContractData) async {
     debugPrint(">>>>>>>>>>>>>>>>>>>>>UD ${eventContractData}");
     sharedPref.sharedPreferences?.setInt(
       "key-individualId",
@@ -412,7 +441,7 @@ class BookingController extends GetxController
         Get.put(EventsCreationController(parser: Get.find()));
     //TO-DO
     //here is call the method
- String currentDate = customFormattedDate(DateTime.now());
+    String currentDate = customFormattedDate(DateTime.now());
     debugPrint(">>>>>>>>>>>>>>>>>>>>>UD ${eventContractData}");
 
     String updatedBodys =
