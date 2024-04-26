@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:ultimate_band_owner_flutter/app/backend/models/event_contract_model.dart';
 import 'package:ultimate_band_owner_flutter/app/controller/appointment_controller.dart';
 import 'package:ultimate_band_owner_flutter/app/controller/notification_screen_controller.dart';
@@ -296,8 +297,7 @@ double fee = double.parse(eventContractData!.fee.toString());
                         SizedBox(width: 10),
                         Text(
                           eventContractData.date != null
-                              ? DateFormat('MMMM d, y').format(
-                                  eventContractData.date!)
+                              ? DateFormat('MMMM d, y').format(eventContractData.date!)
                               : '',
                           style: TextStyle(
                             color: ThemeProvider.orangeColor,
@@ -412,49 +412,83 @@ double fee = double.parse(eventContractData!.fee.toString());
                   ],
                 ),
 
-                SizedBox(height: 20),
-
-                Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  SizedBox(height: 20),
+                  // 2.2 Minutes
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Icon(
-                          //   Icons.volume_up,
-                          //   color: Colors.white,
-                          //   size: 16, // White icon
-                          // ),
+                          const Row(
+                            children: [
+                              SizedBox(width: 10),
+                              Text(
+                                "Band Size",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.none,
+                                ),
+                              ),
+                            ],
+                          ),
                           SizedBox(width: 10),
                           Text(
-                            "Sound Check", // Add your bigger title here
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20, // Adjust the font size as needed
-                              fontWeight: FontWeight.bold,
+                            eventContractData.bandSize.toString(),
+                            style: const TextStyle(
+                              color: ThemeProvider.orangeColor,
+                              fontFamily: 'bold',
+                              fontSize: 14,
                               decoration: TextDecoration.none,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(width: 10),
-                       Text(
-                      resultTime, // Convert the result back to String for Text widget
-                      style: TextStyle(
-                        color: ThemeProvider.orangeColor,
-                        fontFamily: 'bold',
-                        fontSize: 14,
-                        decoration: TextDecoration.none,
-                      ),
-                    ),
+                      SizedBox(height: 10),
+                      // Other widgets...
                     ],
                   ),
-                  SizedBox(height: 10),
-                  // Other widgets...
-                ],
-              ),
+
+                  SizedBox(height: 20),
+
+                  Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(width: 10),
+                            Text(
+                              "Sound Check", // Add your bigger title here
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20, // Adjust the font size as needed
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 10),
+                         Text(
+                        resultTime, // Convert the result back to String for Text widget
+                        style: TextStyle(
+                          color: ThemeProvider.orangeColor,
+                          fontFamily: 'bold',
+                          fontSize: 14,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    // Other widgets...
+                  ],
+                ),
 
 
                   SizedBox(height: 20),

@@ -122,7 +122,7 @@ class BookingController extends GetxController
       return 1;
     }
 
-    return propertyB!.compareTo(propertyA!);
+    return propertyA!.compareTo(propertyB!);
   }
 
   Future<void> getAppointmentById() async {

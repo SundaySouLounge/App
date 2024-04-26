@@ -34,7 +34,7 @@ class _PendingScreenState extends State<PendingScreen> {
       return Scaffold(
         backgroundColor: ThemeProvider.backgroundColor2,
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
           backgroundColor: ThemeProvider.appColor,
           elevation: 0,
           iconTheme: const IconThemeData(color: ThemeProvider.whiteColor),

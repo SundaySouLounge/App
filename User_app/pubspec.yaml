@@ -29,7 +29,7 @@ dependencies:
   flutter_share: ^2.0.0
   date_picker_timeline: ^1.2.5
   table_calendar: ^3.0.9
-  jiffy: ^5.0.0
+  jiffy: ^5.0.1
   connectivity_plus: ^4.0.1
   flutter_multi_formatter: ^2.11.1
   webview_flutter: ^4.2.2

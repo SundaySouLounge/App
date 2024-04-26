@@ -108,8 +108,13 @@ class NotificationsSection extends StatelessWidget {
                                 }
                               }else{
                                  
-                              Get.to(const PendingScreen());
-                          
+                                // Get.to(const PendingScreen());
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const PendingScreen()),
+                                );
+
                               }
                             },
                             child: Column(

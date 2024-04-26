@@ -495,6 +495,7 @@ class _StepOneContentState extends State<StepOneContent> {
                             : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ThemeProvider.appColor,
+                          foregroundColor: ThemeProvider.whiteColor,
                           disabledBackgroundColor: Colors.grey,
                           shape: RoundedRectangleBorder(
                             borderRadius:

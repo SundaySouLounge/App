@@ -52,6 +52,7 @@ class StepTwoContent extends StatelessWidget {
                     : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ThemeProvider.appColor,
+                  foregroundColor: ThemeProvider.whiteColor,
                   disabledBackgroundColor: Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0), // Rounded button

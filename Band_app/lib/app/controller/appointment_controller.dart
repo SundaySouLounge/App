@@ -74,8 +74,16 @@ class AppointmentController extends GetxController
       //     .toList();
       _appointmentList = [];
       _appointmentListOld = [];
-      for (var data in body) {
-        EventContractModel appointment = EventContractModel.fromJson(data);
+
+      // Sort by date descending.
+      List sortedList = body
+          .map<EventContractModel>((item) => EventContractModel.fromJson(item))
+          .toList();
+      sortedList.sort(myDateSortComparison);
+
+      // for (var data in body) {
+      //   EventContractModel appointment = EventContractModel.fromJson(data);
+      for (var appointment in sortedList) {
         if (appointment.date != null &&
             DateTime.now().compareTo(appointment.date!) == 1) {
           _appointmentListOld.add(appointment);
@@ -89,6 +97,26 @@ class AppointmentController extends GetxController
     }
     
     update();
+  }
+
+  int myDateSortComparison(dynamic a, dynamic b) {
+    final propertyA = a.date;
+    final propertyB = b.date;
+
+    // Both are equal.
+    if (propertyA == null && propertyB == null) {
+      return 0;
+    }
+    // Return negative as empty date should be above other.
+    if (propertyA == null && propertyB != null) {
+      return -1;
+    }
+    // Return positive as empty date should be above other.
+    if (propertyA != null && propertyB == null) {
+      return 1;
+    }
+
+    return propertyA!.compareTo(propertyB!);
   }
 
   Future<void> updateEventContractStatus(

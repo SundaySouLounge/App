@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:app_user/app/controller/edit_profile_controller.dart';
 import 'package:app_user/app/controller/events_creation_controller.dart';
 import 'package:app_user/app/util/theme.dart';
+import 'package:jiffy/jiffy.dart';
 
 //STEP SIX
 class StepSixContent extends StatelessWidget {
@@ -63,6 +64,7 @@ class StepSixContent extends StatelessWidget {
                 ),
                  SizedBox(height: 10,),
                  Row(
+                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // const Icon(
                     //   Icons.add_road,
@@ -75,11 +77,15 @@ class StepSixContent extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    Text(
-                      venueAddress,
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
+                    Expanded(
+                        child: Text(
+                          venueAddress,
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                          softWrap: true,
+                          textAlign: TextAlign.left,
+                        ),
                     ),
                   ],
                 ),
@@ -105,7 +111,7 @@ class StepSixContent extends StatelessWidget {
                     ),
                   ],
                 ),
-                 SizedBox(height: 10,),
+                SizedBox(height: 10,),
                 Row(
                   children: [
                     // const Icon(
@@ -121,7 +127,7 @@ class StepSixContent extends StatelessWidget {
                     ),
                     Text(
                     controller.selectedDay != null
-                        ? "${DateFormat('d MMMM').format(controller.selectedDay!)} / ${DateFormat('jm').format(controller.selectedDay!)}"
+                        ? "${Jiffy(controller.selectedDay!).format('EEEE do MMMM')} / ${DateFormat('jm').format(controller.selectedDay!)}"
                         : '',
                     style: const TextStyle(
                       color: Colors.white,
@@ -129,7 +135,7 @@ class StepSixContent extends StatelessWidget {
                   ),
                   ],
                 ),
- SizedBox(height: 10,),
+                SizedBox(height: 10,),
                 // 2.2 Minutes
                 Row(
                   children: [
@@ -152,7 +158,7 @@ class StepSixContent extends StatelessWidget {
                     ),
                   ],
                 ),
- SizedBox(height: 10,),
+                SizedBox(height: 10,),
                 // 2.3 Band Size
                 Row(
                   children: [
@@ -229,7 +235,7 @@ class StepSixContent extends StatelessWidget {
                     //   color: Colors.white, // White icon
                     // ),
                     Text(
-                      "Payment Method ".tr,
+                      "Payment Method: ".tr,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -257,12 +263,13 @@ class StepSixContent extends StatelessWidget {
                       controller.selectedBrandSize != '' &&
                       controller.feeController.text != ''
                   ? () {
-                    controller.setVenueDetails(venueName, venueAddress, mobile, paymentMeths);
+                      controller.setVenueDetails(venueName, venueAddress, mobile, paymentMeths);
                       controller.onSubmit();
                     }
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: ThemeProvider.appColor,
+                foregroundColor: ThemeProvider.whiteColor,
                 disabledBackgroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0), // Rounded button

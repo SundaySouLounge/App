@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:ultimate_band_owner_flutter/app/backend/models/notification_model.dart';
 import 'package:ultimate_band_owner_flutter/app/controller/notification_screen_controller.dart';
 import 'package:ultimate_band_owner_flutter/app/util/theme.dart';
@@ -294,7 +295,7 @@ double fee = double.parse(controller.eventContractData!.fee.toString());
                         Text(
                           controller.eventContractData!.date != null
                               ? DateFormat('MMMM d, y').format(
-                                  controller.eventContractData!.date!)
+                                   controller.eventContractData!.date!)
                               : '',
                           style: TextStyle(
                             color: ThemeProvider.orangeColor,
