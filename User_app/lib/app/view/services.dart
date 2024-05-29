@@ -783,8 +783,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                                                       ? const SizedBox()
                                                       : Text(
                                                           '$name2, ',
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
+                                                          overflow: TextOverflow.ellipsis,
                                                         );
                                                 }),
                                               ),

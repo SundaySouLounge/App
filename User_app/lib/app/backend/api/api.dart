@@ -19,6 +19,9 @@ class ApiService extends GetxService {
           .timeout(Duration(seconds: timeoutInSeconds));
       return parseResponse(response, uri);
     } catch (e) {
+
+//      debugPrint("Bad Response: getPublic: ${Uri.parse(appBaseUrl + uri)}");
+
       return const Response(statusCode: 1, statusText: connectionIssue);
     }
   }
@@ -32,6 +35,9 @@ class ApiService extends GetxService {
           .timeout(Duration(seconds: timeoutInSeconds));
       return parseResponse(response, uri);
     } catch (e) {
+
+//      debugPrint("Bad Response: getOther: ${Uri.parse(uri)}");
+
       return const Response(statusCode: 1, statusText: connectionIssue);
     }
   }
@@ -45,6 +51,9 @@ class ApiService extends GetxService {
           .timeout(Duration(seconds: timeoutInSeconds));
       return parseResponse(response, uri);
     } catch (e) {
+
+//      debugPrint("Bad Response: getExternal: ${Uri.parse(uri)}");
+
       return const Response(statusCode: 1, statusText: connectionIssue);
     }
   }
@@ -58,6 +67,9 @@ class ApiService extends GetxService {
           }).timeout(Duration(seconds: timeoutInSeconds));
       return parseResponse(response, uri);
     } catch (e) {
+
+//      debugPrint("Bad Response: getPrivate: ${Uri.parse(uri)}");
+
       return const Response(statusCode: 1, statusText: connectionIssue);
     }
   }
@@ -82,6 +94,9 @@ class ApiService extends GetxService {
           await http.Response.fromStream(await request.send());
       return parseResponse(response, uri);
     } catch (e) {
+
+//      debugPrint("Bad Response: uploadFiles: ${Uri.parse(uri)}");
+
       return const Response(statusCode: 1, statusText: connectionIssue);
     }
   }
@@ -96,7 +111,10 @@ class ApiService extends GetxService {
             body: jsonEncode(body),
           )
           .timeout(Duration(seconds: timeoutInSeconds));
-      debugPrint('response.body --> ${response.body}');
+      debugPrint('postPublic: response.body --> ${response.body}');
+
+//      debugPrint("postPublic: ${response.statusCode}, ${response.body == null}");
+
       return parseResponse(response, appBaseUrl + uri);
     } catch (e) {
       return const Response(statusCode: 1, statusText: connectionIssue);
@@ -169,6 +187,7 @@ class ApiService extends GetxService {
             statusText: response.body['message']);
       }
     } else if (response.statusCode != 200 && response.body == null) {
+//      debugPrint("Bad Response - parseResponse: $uri => ${response.statusCode}");
       response = const Response(statusCode: 0, statusText: connectionIssue);
     }
     return response;

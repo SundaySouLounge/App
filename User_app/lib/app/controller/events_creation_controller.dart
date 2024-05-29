@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_user/app/backend/models/profile_model.dart';
@@ -212,28 +215,44 @@ final sharedPrefs = Get.find<SharedPreferencesManager>();
     update();
   }
 
-
+  bool _showWaitingToasts = false;
   Future<void> onSubmit() async {
     apiCalled = false;
     update();
-    Response response = await parser.createEventContract({
-      'salon_id': arguments[1],
-      'individual_id': arguments[0],
-      'date': selectedDay != null ? selectedDay!.toIso8601String() : null,
-      'time': selectedTime,
-      'band_size': selectedBrandSize,
-      'fee': feeController.text,
-      'extra_field': extraFieldController.text,
-      'venue_name': venueName,
-      'venue_address': venueAddress,
-      'mobile': venueMobile,
-      'musician': musician,
-      'payment_method': payment,
-    });
+
+    Response response;
+    int attemptCounter = 0;
+    _showWaitingToasts = true;
+    showWaitingToasts();
+    do {
+      response = await parser.createEventContract({
+        'salon_id': arguments[1],
+        'individual_id': arguments[0],
+        'date': selectedDay != null ? selectedDay!.toIso8601String() : null,
+        'time': selectedTime,
+        'band_size': selectedBrandSize,
+        'fee': feeController.text,
+        'extra_field': extraFieldController.text,
+        'venue_name': venueName,
+        'venue_address': venueAddress,
+        'mobile': venueMobile,
+        'musician': musician,
+        'payment_method': payment,
+      });
+      attemptCounter++;
+    } while(response.statusCode != 200 && attemptCounter < 3);
+
+    debugPrint("createEventContract Response: ${response.body}");
+
+    _showWaitingToasts = false;
+    await Future.delayed(const Duration(milliseconds: 2500)); // Wait for the last waiting toasts above to get hidden.
 
     if (response.statusCode == 200) {
       successToast('Congratulations! The artist has received your job offer! ');
       await getSavedEventContracts();
+    } else {
+      showToast('Unable to process your request. You are required to try again from start.');
+      await Future.delayed(const Duration(milliseconds: 3500)); // Wait for the toast above to get hidden.
     }
 
     currentStep = 1;
@@ -241,6 +260,35 @@ final sharedPrefs = Get.find<SharedPreferencesManager>();
     update();
   }
 
+  Future<void> showWaitingToasts() async {
+    int counter = 0;
+    List<String> messages = [
+      "Loading",
+      "Please wait, we're being awesome!",
+      "It's coming, please hold the phone!",
+      "Loading",
+      "Don't worry, the musicians are being awesome!",
+      "Don't worry, the DJs are smashing it!",
+    ];
+    while(_showWaitingToasts) {
+      String message = messages[counter % messages.length];
+      Get.showSnackbar(GetSnackBar(
+        backgroundColor: const Color.fromARGB(255, 24, 24, 24),
+        message: message.tr,
+        duration: const Duration(seconds: 3),
+        snackStyle: SnackStyle.FLOATING,
+        margin: const EdgeInsets.all(10),
+        borderRadius: 10,
+        isDismissible: false,
+        dismissDirection: DismissDirection.horizontal,
+      ));
+
+      await Future.delayed(const Duration(milliseconds: 3000)); // Wait for the toast to get hidden.
+
+      counter++;
+    }
+  }
+  
   void selectStep(int step) {
     currentStep = step;
     update();

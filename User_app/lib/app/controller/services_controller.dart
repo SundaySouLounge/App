@@ -94,12 +94,12 @@ class ServicesController extends GetxController
     } else {
       salonId = Get.arguments[0];
     }
-    getSalonDetails();
+    getSalonDetails(onInit: true);
     currencySide = parser.getCurrencySide();
     currencySymbol = parser.getCurrencySymbol();
   }
 
-  Future<void> getSalonDetails() async {
+  Future<void> getSalonDetails({bool onInit = false}) async {
     if (salonId == null) {
       return;
     }
@@ -174,8 +174,10 @@ class ServicesController extends GetxController
       getDistance = distance.toString();
       update();
     } else {
-      Get.back();
-      ApiChecker.checkApi(response);
+      if(!onInit) {
+        Get.back();
+        ApiChecker.checkApi(response);
+      }
     }
     update();
   }

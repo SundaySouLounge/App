@@ -75,181 +75,186 @@ class EventContractController extends Controller
     }
 
     public function save( Request $request )
-{
-    $validator = Validator::make($request->all(), [
-        'date' => 'required',
-        'time' => 'required',
-        'band_size' => 'required',
-        'fee' => 'required',
-    ]);
+    {
+        $validator = Validator::make($request->all(), [
+            'date' => 'required',
+            'time' => 'required',
+            'band_size' => 'required',
+            'fee' => 'required',
+        ]);
 
-    if ($validator->fails()) {
-        $response = [
-            'success' => false,
-            'message' => 'Validation Error.',
-            'errors' => $validator->errors(),
-            'status' => 500
-        ];
-        return response()->json($response, 404);
-    }
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'message' => 'Validation Error.',
+                'errors' => $validator->errors(),
+                'status' => 500
+            ];
+            return response()->json($response, 404);
+        }
 
-    // Create an instance of the PushNotificationController
-    $userInfo = Auth::user();
-    $requestData = $request->all();
-    $requestData['user_id'] = $userInfo->id;
+        // Create an instance of the PushNotificationController
+        $userInfo = Auth::user();
+        $requestData = $request->all();
+        $requestData['user_id'] = $userInfo->id;
 
-    // to send owner
-    if ($request->salon_id) {
-        $requestData['salon_uid'] = Salon::find($request->salon_id)->uid;
-    } else if ($request->individual_id) {
-        $requestData['individual_uid'] = Individual::find($request->individual_id)->uid;
-    }
+        // Fill in venue info fields, if empty.
+        $requestData['venue_name'] = $requestData['venue_name'] ?? $userInfo->venue_name;
+        $requestData['venue_address'] = $requestData['venue_address'] ?? $userInfo->venue_address;
+        $requestData['mobile'] = $requestData['mobile'] ?? !str_starts_with(trim($userInfo->mobile), '+') ? $userInfo->country_code.' '.$userInfo->mobile : $userInfo->mobile;
 
-    $data = EventContract::create($requestData);
+        // to send owner
+        if ($request->salon_id) {
+            $requestData['salon_uid'] = Salon::find($request->salon_id)->uid;
+        } else if ($request->individual_id) {
+            $requestData['individual_uid'] = Individual::find($request->individual_id)->uid;
+        }
 
-    if (is_null($data)) {
+        $data = EventContract::create($requestData);
+
+        if (is_null($data)) {
+            $response = [
+                'data' => $data,
+                'message' => 'error',
+                'status' => 500,
+            ];
+            return response()->json($response, 200);
+        }
+        $pushNotificationController = new PushNotificationController();
+
+        // $request->merge(['custom_param' => 'custom_value']);
+        
+        // print_r($request->data);
+
+        // to send owner
+        if ($request->salon_id) {
+            $request['id'] = Salon::find($request->salon_id)->uid;
+            $venueName = $requestData['venue_name'] ?? 'A Venue';
+            $date = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('Y-m-d \TH:i') : 'Unknown Date';
+            $additionalText = ' has sent you a contract!';
+            $request['title'] = $venueName . $additionalText;
+            $request['message'] = $date;
+            $request['data'] = [
+                'screen' => '/notifications',
+                'event_contract_id' => $data->id,
+            ];
+
+            
+        } else if ($request->individual_id) {
+                $request['id'] = Individual::find($request->individual_id)->uid;
+                $venueName = $requestData['venue_name'] ?? 'A Venue';
+            $date = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('Y-m-d \TH:i') : 'Unknown Date';
+            $additionalText = ' has sent you a contract!';
+            $request['title'] = $venueName . $additionalText;
+            $request['message'] = $date;
+            $request['data'] = [
+                'screen' => '/notifications',
+                'event_contract_id' => $data->id,
+            ];
+
+            
+        }else if( $request['id'] = $userInfo->id){
+            $request['title'] = 'User Event Request';
+            $request['message'] = 'Created new Event Contract. Please confirm it';
+            $request['data'] = [
+                'screen' => '/notifications',
+                'event_contract_id' => $data->id,
+            ];
+            $pushNotificationController->sendNotification($request);
+        }
+
+        $pushNotificationController->sendNotification($request);
+            \Log::info($request->all());
+
+        $settings = Settings::take(1)->first(); // Assuming you fetch your settings
+        $generalInfo = Settings::take(1)->first();
+
+        // Fixed email address
+        $fixedEmail = "admin@sundaysoullounge.co.uk";
+
+        Mail::send('mails/rossevent', [
+            'app_name' => $settings->name,
+        ], function ($message) use ($fixedEmail, $settings) {
+            $message->to($fixedEmail, 'Ross check')
+                ->subject('New Event');
+            $message->from($settings->email, $settings->name);
+        });
+        $user = User::find($userInfo->id);
+
+        // Retrieve the email address of the user
+        $userEmail = $user->email;
+
+        // Pass the user's email to the Mail::send() function
+        Mail::send('mails/event', [
+            'app_name' => $settings->name,
+        ], function ($message) use ($userEmail, $settings) {
+            $message->to($userEmail, 'Recipient Name') // Change 'Recipient Name' as needed
+                ->subject('New Event');
+            $message->from($settings->email, $settings->name);
+        });
+
+
+        if ($request->salon_id) {
+            // Find the salon using the salon_id
+            $salon = Salon::find($request->salon_id);
+
+            // Check if the salon exists and if it has an associated user
+            if ($salon && $salon->uid) {
+                $salonUser = User::find($salon->uid);
+                if($salonUser){
+                    // Retrieve the email address of the salon owner using the user's uid
+                    $salonOwnerEmail = $salonUser->email;
+
+                    // Pass the salon owner's email to the Mail::send() function
+                    Mail::send('mails/event', [
+                        'app_name' => $settings->name,
+                    ], function ($message) use ($salonOwnerEmail, $settings) {
+                        $message->to($salonOwnerEmail, 'Salon Owner Name') // Change 'Salon Owner Name' as needed
+                            ->subject('New Event');
+                        $message->from($settings->email, $settings->name);
+                    });
+                }
+            } else {
+                // Log an error or handle the case where the salon or user is not found
+                \Log::error('Salon or user not found for salon_id: ' . $request->salon_id);
+            }
+        } else if ($request->individual_id) {
+            // Find the individual using the individual_id
+            $individual = Individual::find($request->individual_id);
+
+            // Check if the individual exists and if it has an associated user
+            if ($individual && $individual->uid) {
+                $individualUser = User::find($individual->uid);
+                if($individualUser){
+                    // Retrieve the email address of the individual using the user's uid
+                    $individualEmail = $individualUser->email;
+
+                    // Pass the individual's email to the Mail::send() function
+                    Mail::send('mails/event', [
+                        'app_name' => $settings->name,
+                    ], function ($message) use ($individualEmail, $settings) {
+                        $message->to($individualEmail, 'Individual Name') // Change 'Individual Name' as needed
+                            ->subject('New Event');
+                        $message->from($settings->email, $settings->name);
+                    });
+                }
+            } else {
+                // Log an error or handle the case where the individual or user is not found
+                \Log::error('Individual or user not found for individual_id: ' . $request->individual_id);
+            }
+        }
+
+
+
+
         $response = [
             'data' => $data,
-            'message' => 'error',
-            'status' => 500,
+            'success' => true,
+            'status' => 200,
         ];
+
         return response()->json($response, 200);
     }
-    $pushNotificationController = new PushNotificationController();
-
-    // $request->merge(['custom_param' => 'custom_value']);
-    
-    // print_r($request->data);
-
-    // to send owner
-    if ($request->salon_id) {
-        $request['id'] = Salon::find($request->salon_id)->uid;
-        $venueName = $requestData['venue_name'] ?? 'Unknown Venue';
-        $date = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('Y-m-d \TH:i') : 'Unknown Date';
-        $additionalText = ' has sent you a contract!';
-        $request['title'] = $venueName . $additionalText;
-        $request['message'] = $date;
-        $request['data'] = [
-            'screen' => '/notifications',
-            'event_contract_id' => $data->id,
-        ];
-
-        
-    } else if ($request->individual_id) {
-            $request['id'] = Individual::find($request->individual_id)->uid;
-            $venueName = $requestData['venue_name'] ?? 'Unknown Venue';
-        $date = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('Y-m-d \TH:i') : 'Unknown Date';
-        $additionalText = ' has sent you a contract!';
-        $request['title'] = $venueName . $additionalText;
-        $request['message'] = $date;
-        $request['data'] = [
-            'screen' => '/notifications',
-            'event_contract_id' => $data->id,
-        ];
-
-        
-    }else if( $request['id'] = $userInfo->id){
-        $request['title'] = 'User Event Request';
-        $request['message'] = 'Created new Event Contract. Please confirm it';
-        $request['data'] = [
-            'screen' => '/notifications',
-            'event_contract_id' => $data->id,
-        ];
-        $pushNotificationController->sendNotification($request);
-    }
-
-    $pushNotificationController->sendNotification($request);
-        \Log::info($request->all());
-
-    $settings = Settings::take(1)->first(); // Assuming you fetch your settings
-    $generalInfo = Settings::take(1)->first();
-
-    // Fixed email address
-    $fixedEmail = "admin@sundaysoullounge.co.uk";
-
-    Mail::send('mails/rossevent', [
-        'app_name' => $settings->name,
-    ], function ($message) use ($fixedEmail, $settings) {
-        $message->to($fixedEmail, 'Ross check')
-            ->subject('New Event');
-        $message->from($settings->email, $settings->name);
-    });
-    $user = User::find($userInfo->id);
-
-    // Retrieve the email address of the user
-    $userEmail = $user->email;
-
-    // Pass the user's email to the Mail::send() function
-    Mail::send('mails/event', [
-        'app_name' => $settings->name,
-    ], function ($message) use ($userEmail, $settings) {
-        $message->to($userEmail, 'Recipient Name') // Change 'Recipient Name' as needed
-            ->subject('New Event');
-        $message->from($settings->email, $settings->name);
-    });
-
-
-    if ($request->salon_id) {
-        // Find the salon using the salon_id
-        $salon = Salon::find($request->salon_id);
-
-        // Check if the salon exists and if it has an associated user
-        if ($salon && $salon->uid) {
-            $salonUser = User::find($salon->uid);
-            if($salonUser){
-                // Retrieve the email address of the salon owner using the user's uid
-                $salonOwnerEmail = $salonUser->email;
-
-                // Pass the salon owner's email to the Mail::send() function
-                Mail::send('mails/event', [
-                    'app_name' => $settings->name,
-                ], function ($message) use ($salonOwnerEmail, $settings) {
-                    $message->to($salonOwnerEmail, 'Salon Owner Name') // Change 'Salon Owner Name' as needed
-                        ->subject('New Event');
-                    $message->from($settings->email, $settings->name);
-                });
-            }
-        } else {
-            // Log an error or handle the case where the salon or user is not found
-            \Log::error('Salon or user not found for salon_id: ' . $request->salon_id);
-        }
-    } else if ($request->individual_id) {
-        // Find the individual using the individual_id
-        $individual = Individual::find($request->individual_id);
-
-        // Check if the individual exists and if it has an associated user
-        if ($individual && $individual->uid) {
-            $individualUser = User::find($individual->uid);
-            if($individualUser){
-                // Retrieve the email address of the individual using the user's uid
-                $individualEmail = $individualUser->email;
-
-                // Pass the individual's email to the Mail::send() function
-                Mail::send('mails/event', [
-                    'app_name' => $settings->name,
-                ], function ($message) use ($individualEmail, $settings) {
-                    $message->to($individualEmail, 'Individual Name') // Change 'Individual Name' as needed
-                        ->subject('New Event');
-                    $message->from($settings->email, $settings->name);
-                });
-            }
-        } else {
-            // Log an error or handle the case where the individual or user is not found
-            \Log::error('Individual or user not found for individual_id: ' . $request->individual_id);
-        }
-    }
-
-
-
-
-    $response = [
-        'data' => $data,
-        'success' => true,
-        'status' => 200,
-    ];
-
-    return response()->json($response, 200);
-}
 
     public function update( Request $request )
     {
