@@ -1,4 +1,6 @@
 import 'dart:collection';
+import 'dart:convert';
+import 'package:app_user/app/backend/models/event_contract_model.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -124,6 +126,7 @@ class _StepOneContentState extends State<StepOneContent> {
     // }
 
     for (final item in controller.savedEventContractsList) {
+      if(item.status == 'Deleted' || item.status == 'Declined') { continue; }
       if (item.date != null) {
         final itemDate =
             DateTime(item.date!.year, item.date!.month, item.date!.day);

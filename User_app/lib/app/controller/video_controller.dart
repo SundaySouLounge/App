@@ -52,16 +52,17 @@ class VideoController extends GetxController implements GetxService {
     if (response.statusCode == 200) {
       Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
       var body = myMap['data'];
-      print("Response: $body");
+      print("getMyVideos() Response: $body");
       _videoList = [];
       body.forEach((element) {
         VideoModel video = VideoModel.fromJson(element);
         _videoList.add(video);
       });
     } else {
+      // Reset the list to make sure there are no cached videos from previous instance.
+      _videoList = [];
       ApiChecker.checkApi(response);
     }
-
     apiCalled = true; // Set apiCalled to true after fetching videos
     update();
   }

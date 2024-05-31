@@ -146,6 +146,7 @@ final sharedPrefs = Get.find<SharedPreferencesManager>();
     // debugPrint(">>>>>>>>>>>>>>>>>>>>>>>>>>>>${arguments[1]}");
     final id = sharedPrefs.getInt("key-individualId");
     Response response;
+/*
     if (arguments == null) {
       response = await parser.getSavedEventContracts({
         'individual_id': id,
@@ -157,20 +158,31 @@ final sharedPrefs = Get.find<SharedPreferencesManager>();
         'salon_id': arguments[1],
       });
     }
+ */
+    if (arguments == null) {
+      response = await parser.getUnavailableDatesById({
+        'individual_id': id,
+        'salon_id': 0,
+      });
+    } else {
+      response = await parser.getUnavailableDatesById({
+        'individual_id': arguments[0],
+        'salon_id': arguments[1],
+      });
+    }
+
     if (response.statusCode == 200) {
       Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
 
-      debugPrint(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>${myMap['data']}");
-      // try {
-
-
-      //unavailableDatesList = (myMap['data'] as List<dynamic>)
-        //  .map<DateTime>((item) => DateTime.parse(item.toString()))
-          //.toList();
-      //debugPrint("MMMMMMMMMMMMMMM>>>>>>>>>>>>>>>>${unavailableDatesList}");
-      // } catch(error) {
-      //   debugPrint(error.toString());
-      // }
+      //debugPrint("getUnavailableDatesById >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>${myMap['data']}");
+       try {
+         unavailableDatesList = (myMap['data'] as List<dynamic>)
+             .map<DateTime>((item) => DateTime.parse(item.toString()))
+             .toSet().toList();
+        //debugPrint("MMMMMMMMMMMMMMM>>>>>>>>>>>>>>>> ${unavailableDatesList.length} => ${unavailableDatesList}");
+       } catch(error) {
+         debugPrint(error.toString());
+       }
     }
     apiCalled = true;
 
