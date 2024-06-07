@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:app_user/app/backend/parse/events_creation_parse.dart';
+import 'package:app_user/app/controller/events_creation_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -49,11 +53,40 @@ class NewEventRequestDialogPending extends StatelessWidget {
     BuildContext context,
     BookingController controller,
   ) async {
+
+    // Fetch the events for the musician/DJ.
+    Response response;
+    final EventsCreationParser parser = Get.find();
+    response = await parser.getSavedEventContracts({
+      'individual_id': eventContractData.individualId ?? 0,
+      'salon_id': eventContractData.salonId ?? 0,
+    });
+    List<DateTime> savedEventContractsDates = [];
+    if (response.statusCode == 200) {
+      Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
+      List<EventContractModel> savedEventContractsList = myMap['data']
+          .map<EventContractModel>((item) => EventContractModel.fromJson(item))
+          .toList();
+      // Extract date-time of the events.
+      for(final event in savedEventContractsList) {
+        if(event.status == 'Declined' || event.status == 'Deleted') { continue; }
+        if(event.date == null) { continue; }
+        savedEventContractsDates.add(event.date!);
+      }
+    }
+
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: eventContractData.date ?? DateTime.now(),
-      firstDate: DateTime(2023),
+      //firstDate: DateTime(2023),
+      firstDate: DateTime.now(),  // So that
       lastDate: DateTime(2027),
+/*      selectableDayPredicate: (day) {
+        DateTime initial = eventContractData.date ?? DateTime.now();
+        // Past date will return 1. Today be 0. Future be -1.
+        return initial.compareTo(day) > 0;
+      },
+ */
     );
 
     if (pickedDate != null) {
