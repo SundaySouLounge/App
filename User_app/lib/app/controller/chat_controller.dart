@@ -1,3 +1,4 @@
+import 'package:app_user/app/backend/parse/account_parse.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_user/app/backend/api/handler.dart';
@@ -123,10 +124,17 @@ class ChatController extends GetxController implements GetxService {
     //TO-DO
     // the notification is not coming
     if (response.statusCode == 200) {
+      final AccountParser accountParser = Get.find();
+      String msgExcerpt = msg;
+      if(msg.length > 60) {
+        msgExcerpt = "${msg.substring(0, 60)}...";
+      }
       var notificationParam1 = {
         "id": getM,
-        "title": 'New message received',
-        "message": message
+        // "title": 'New message received',
+        // "message": message
+        "title": "${accountParser.getVenueName()} has sent you a message! \n$msgExcerpt",
+        "message": "Click to view and reply!"
       };
       await parser.sendNotification(notificationParam1);
       print("notification  $getM");

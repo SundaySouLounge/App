@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use Artisan;
 use DB;
+use Illuminate\Support\Facades\Date;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;
 use Symfony\Component\Mime\Part\TextPart; 
 use Symfony\Component\Mime\Part\HtmlPart;

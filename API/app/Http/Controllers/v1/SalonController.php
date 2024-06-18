@@ -16,10 +16,15 @@ use App\Models\Specialist;
 use App\Models\Packages;
 use App\Models\Commission;
 use App\Models\Products;
+use App\Models\UnavailableDate;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Validator;
 use DB;
+use Doctrine\DBAL\Query;
+use Exception;
+use Faker\Calculator\Ean;
 
 class SalonController extends Controller
 {
@@ -123,12 +128,16 @@ class SalonController extends Controller
         $solo = 0;
         $duo = 0;
         $trio = 0;
+        $quartet = 0;
+        $date = date("Y-m-d");
 
         if ($request->has('param') && $request->has('lat') && $request->has('lng')) {
             $str = $request->param;
             $solo = $request->solo;
             $duo = $request->duo;
             $trio = $request->trio;
+            $quartet = $request->quarter;
+            $date = isset($request->date) ? Carbon::parse($request->date)->format('Y-m-d') : $date;
             $lat = $request->lat;
             $lng = $request->lng;
         }
@@ -142,22 +151,61 @@ class SalonController extends Controller
             $distanceType = 'km';
         }
 
+        // DJs.
+        $salon_ids = UnavailableDate::select('salon_id')
+        ->where('unavailable_date', '=', $date)
+        ->whereNotNull('salon_id')
+        ->distinct()->pluck('salon_id')->toArray();
+
         $salon = Salon::select(DB::raw('salon.id as id,salon.uid as uid,salon.name as name,salon.rating as rating,
         salon.total_rating as total_rating,salon.address as address,salon.cover as cover,salon.lat as salon_lat,salon.lng as salon_lng, ( '.$values.' * acos( cos( radians('.$lat.') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( lat ) ) ) ) AS distance'))
         ->having('distance', '<', (int)$searchQuery->allowDistance)
         ->orderBy('distance')
         ->where('salon.name', 'like', '%'.$str.'%')
-        ->where(['salon.in_home' => $solo, 'salon.have_stylist' => $duo, 'salon.service_at_home' => $trio])
+        // ->where(['salon.in_home' => $solo, 'salon.have_stylist' => $duo, 'salon.service_at_home' => $trio])
+        ->where(function ($query) use ($solo, $duo, $trio) {
+            if($solo) {
+                $query->orWhere('salon.in_home', '=', $solo);
+            }
+            if($duo) {
+                $query->orWhere('salon.have_stylist', '=', $duo);
+            }
+            if($trio) {
+                $query->orWhere('salon.service_at_home', '=', $trio);
+            }
+        })
         ->where('salon.status', 1)
+        ->whereNotIn('salon.id', $salon_ids)
         ->get();
+
+        // Musicians.
+        $freelancer_ids = UnavailableDate::select('individual_id')
+        ->where('unavailable_date', '=', $date)
+        ->whereNotNull('individual_id')
+        ->distinct()->pluck('individual_id')->toArray();
 
         $freelancer = Individual::select(DB::raw('individual.id as id,individual.uid as uid,individual.categories,individual.lat as lat,individual.lng as lng,users.first_name as first_name,users.last_name as last_name,users.cover as cover, ( '.$values.' * acos( cos( radians('.$lat.') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( lat ) ) ) ) AS distance'))
         ->having('distance', '<', (int)$searchQuery->allowDistance)
         ->orderBy('distance')
         ->join('users','individual.uid','users.id')
         ->where('users.first_name', 'like', '%'.$str.'%')
-        ->where(['individual.status'=>1,'individual.in_home'=>$solo])
+        // ->where(['individual.status'=>1, 'individual.in_home'=>$solo])
+        //->where(['individual.status'=>1, 'individual.have_shop'=>$solo, 'individual.in_home'=>$duo, 'individual.triocheck'=>$trio, 'individual.quartetcheck' => $quartet])
+        ->where('individual.status', '=', 1)
+        ->where(function ($query) use ($solo, $duo, $trio) {
+            if($solo) {
+                $query->orWhere('individual.have_shop', '=', $solo);
+            }
+            if($duo) {
+                $query->orWhere('individual.in_home', '=', $duo);
+            }
+            if($trio) {
+                $query->orWhere('individual.triocheck', '=', $trio);
+            }
+        })
+        ->whereNotIn('individual.id', $freelancer_ids)
         ->get();
+
         foreach($freelancer as $loop){
             $loop->distance = round($loop->distance,2);
         }
@@ -212,6 +260,9 @@ class SalonController extends Controller
             $loop->userInfo = User::select('first_name','last_name','cover')->find($loop->uid);
         }
 
+        $top_freelancers = $this->_getTopFreelancer($request->lat, $request->lng);
+        $top_salons = $this->_getTopSalon($request->lat, $request->lng);
+
         $categories =  Category::where('status',1)->get();
 
         $cities  = Cities::select(DB::raw('cities.id as id,cities.name as name, ( '.$values.' * acos( cos( radians('.$request->lat.') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('.$request->lng.') ) + sin( radians('.$request->lat.') ) * sin( radians( lat ) ) ) ) AS distance'))
@@ -231,6 +282,8 @@ class SalonController extends Controller
             'salon'=>$salon,
             'categories'=>$categories,
             'individual'=>$freelancer,
+            'topFreelancers'=>$top_freelancers,
+            'topSalons'=>$top_salons,
             'cities'=>$cities,
             'banners'=>$banners,
             'products'=>$products,
@@ -329,27 +382,8 @@ class SalonController extends Controller
             ];
             return response()->json($response, 404);
         }
-        $searchQuery = Settings::select('allowDistance','searchResultKind')->first();
-        $categories = Category::where(['status'=>1])->get();
-        if($searchQuery->searchResultKind == 1){
-            $values = 3959; // miles
-            $distanceType = 'miles';
-        }else{
-            $values = 6371; // km
-            $distanceType = 'km';
-        }
 
-        $data = Individual::select(DB::raw('individual.id as id,individual.uid as uid,individual.categories,individual.fee_start as fee_start,
-        individual.rating as rating,individual.total_rating as total_rating, ( '.$values.' * acos( cos( radians('.$request->lat.') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('.$request->lng.') ) + sin( radians('.$request->lat.') ) * sin( radians( lat ) ) ) ) AS distance'))
-        ->having('distance', '<', (int)$searchQuery->allowDistance)
-        ->orderBy('distance')
-        ->where(['individual.status'=>1,'individual.in_home'=>1])
-        ->get();
-        foreach($data as $loop){
-            $loop->userInfo = User::select('first_name','last_name','cover')->find($loop->uid);
-            $ids = explode(',',$loop->categories);
-            $loop->categories = Category::select('id','name','cover')->WhereIn('id',$ids)->get();
-        }
+        $data = $this->_getTopFreelancer($request->lat, $request->lng);
 
         $response = [
             'data'=>$data,
@@ -372,6 +406,44 @@ class SalonController extends Controller
             ];
             return response()->json($response, 404);
         }
+
+        $data = $this->_getTopSalon($request->lat, $request->lng);
+
+        $response = [
+            'data'=>$data,
+            'success' => true,
+            'status' => 200,
+        ];
+        return response()->json($response, 200);
+    }
+
+    private function _getTopFreelancer($lat, $lng) {
+        $searchQuery = Settings::select('allowDistance','searchResultKind')->first();
+        $categories = Category::where(['status'=>1])->get();
+        if($searchQuery->searchResultKind == 1){
+            $values = 3959; // miles
+            $distanceType = 'miles';
+        }else{
+            $values = 6371; // km
+            $distanceType = 'km';
+        }
+
+        $data = Individual::select(DB::raw('individual.id as id,individual.uid as uid,individual.categories,individual.fee_start as fee_start,
+        individual.rating as rating,individual.total_rating as total_rating, ( '.$values.' * acos( cos( radians('.$lat.') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( lat ) ) ) ) AS distance'))
+        ->having('distance', '<', (int)$searchQuery->allowDistance)
+        ->orderBy('distance')
+        ->where(['individual.status'=>1,'individual.in_home'=>1])
+        ->get();
+        foreach($data as $loop){
+            $loop->userInfo = User::select('first_name','last_name','cover')->find($loop->uid);
+            $ids = explode(',',$loop->categories);
+            $loop->categories = Category::select('id','name','cover')->WhereIn('id',$ids)->get();
+        }
+
+        return $data;
+    }
+
+    private function _getTopSalon($lat, $lng) {
         $searchQuery = Settings::select('allowDistance','searchResultKind')->first();
         $categories = Category::where(['status'=>1])->get();
         if($searchQuery->searchResultKind == 1){
@@ -383,7 +455,7 @@ class SalonController extends Controller
         }
 
         $data = Salon::select(DB::raw('salon.id as id,salon.uid as uid,salon.name as name,salon.rating as rating,
-        salon.total_rating as total_rating,salon.address as address,salon.cover as cover,salon.categories as categories, ( '.$values.' * acos( cos( radians('.$request->lat.') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('.$request->lng.') ) + sin( radians('.$request->lat.') ) * sin( radians( lat ) ) ) ) AS distance'))
+        salon.total_rating as total_rating,salon.address as address,salon.cover as cover,salon.categories as categories, ( '.$values.' * acos( cos( radians('.$lat.') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('.$lng.') ) + sin( radians('.$lat.') ) * sin( radians( lat ) ) ) ) AS distance'))
         ->having('distance', '<', (int)$searchQuery->allowDistance)
         ->orderBy('distance')
         ->where(['salon.status'=>1,'salon.in_home'=>1])
@@ -394,12 +466,7 @@ class SalonController extends Controller
             $loop->categories = Category::select('id','name','cover')->WhereIn('id',$ids)->get();
         }
 
-        $response = [
-            'data'=>$data,
-            'success' => true,
-            'status' => 200,
-        ];
-        return response()->json($response, 200);
+        return $data;
     }
 
     public function getDataFromCategory(Request $request){

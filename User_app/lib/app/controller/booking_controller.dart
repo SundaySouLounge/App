@@ -15,6 +15,7 @@ import 'package:app_user/app/controller/notification_screen_controller.dart';
 import 'package:app_user/app/helper/router.dart';
 import 'package:app_user/app/helper/shared_pref.dart';
 import 'package:app_user/app/util/constant.dart';
+import 'package:jiffy/jiffy.dart';
 
 class BookingController extends GetxController
     with GetTickerProviderStateMixin
@@ -65,7 +66,8 @@ class BookingController extends GetxController
   }
 
   String customFormattedDate(DateTime date) {
-    String formattedDate = DateFormat('EEEE d MMMM yyyy').format(date);
+    // String formattedDate = DateFormat('EEEE d MMMM yyyy').format(date);
+    String formattedDate = Jiffy(date).format('EEEE do MMMM');
     return formattedDate;
   }
 
@@ -201,7 +203,8 @@ class BookingController extends GetxController
 
     var notificationParam1 = {
       "id": eventContractData.userId,
-      "title": "${eventContractData.venueName} $formattedEventDate",
+      // "title": "${eventContractData.venueName} $formattedEventDate",
+      "title": "${eventContractData.musician} $formattedEventDate",
       "message": "Negotiating",
     };
     await parser.sendNotification(notificationParam1);
@@ -228,15 +231,15 @@ class BookingController extends GetxController
       EventContractModel eventContractData, DateTime updatedDateTime) async {
     if (eventContractData != null) {
       try {
-        String formattedDate =
-            DateFormat('dd/MM/yyyy HH:mm').format(updatedDateTime);
+        // String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(updatedDateTime);
+        String formattedDate = customFormattedDate(updatedDateTime);
         String updatedBodys =
             '${eventContractData.bodys} Venue: New Date $formattedDate /n';
         var notificationParam1 = {
           "id": eventContractData!.userId,
           "title": "${eventContractData.musician} Date Change",
-          "message":
-              "${eventContractData.date} to $formattedDate", // Add a default message or modify as needed
+          // "message": "${eventContractData.date} to $formattedDate", // Add a default message or modify as needed
+          "message": "${customFormattedDate(eventContractData!.date!)} to $formattedDate", // Add a default message or modify as needed
         };
         print("Sending Notification 1: $notificationParam1");
         await parser.sendNotification(notificationParam1);
@@ -244,8 +247,8 @@ class BookingController extends GetxController
         var notificationParam2 = {
           "id": eventContractData!.individualUid ?? eventContractData!.salonUid,
           "title": "${eventContractData.venueName} has requested a Date Change",
-          "message":
-              "${eventContractData.date} to $formattedDate", // Add a default message or modify as needed
+          // "message": "${eventContractData.date} to $formattedDate", // Add a default message or modify as needed
+          "message": "${customFormattedDate(eventContractData!.date!)} to $formattedDate", // Add a default message or modify as needed
         };
         print("Sending Notification 2: $notificationParam2");
         await parser.sendNotification(notificationParam2);
@@ -263,15 +266,14 @@ class BookingController extends GetxController
   Future<void> onWithdrawalSubmit(
       EventContractModel eventContractData, String selectedDate) async {
     // Your existing logic
-    String formattedSelectedDate =
-        customFormattedDate(DateTime.parse(selectedDate));
+    String formattedSelectedDate = customFormattedDate(DateTime.parse(selectedDate));
 
     String updatedBodys =
         '${eventContractData.bodys} Venue: New Deadline $formattedSelectedDate /n';
     if (eventContractData != null) {
       var notificationParam1 = {
         "id": eventContractData.userId,
-        "title": "You have set a deadline for ${eventContractData.musician}",
+        "title": "You have set a deadline for ${eventContractData.musician}!",
         "message": "This job offer will disappear on $formattedSelectedDate",
       };
       await parser.sendNotification(notificationParam1);
@@ -350,7 +352,7 @@ class BookingController extends GetxController
 
       var notificationParam1 = {
         "id": eventContractData.userId,
-        "title": "$currentDate you withdrawn your contract with ",
+        "title": "$currentDate you have withdrawn your contract with ",
         "message": " ${eventContractData!.musician}",
       };
       await parser.sendNotification(notificationParam1);
@@ -379,7 +381,7 @@ class BookingController extends GetxController
 
       var notificationParam1 = {
         "id": eventContractData.userId,
-        "title": "You have accepted your contract! ",
+        "title": "You have accepted your contract ${eventContractData!.musician}!",
         "message": "$currentDate",
       };
       await parser.sendNotification(notificationParam1);

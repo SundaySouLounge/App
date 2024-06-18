@@ -54,9 +54,10 @@ class AppSearchController extends GetxController implements GetxService {
     switchValue2 = newSwitchValue2;
     switchValue3 = newSwitchValue3;
     switchValue4 = newSwitchValue4;
-    print("$switchValue1, $switchValue2, $switchValue3, $switchValue4");
+    selectedDate = newSelectedDate;
+    debugPrint("Switch values before update: $switchValue1, $switchValue2, $switchValue3, $switchValue4");
     update();
-    print("$switchValue1, $switchValue2, $switchValue3, $switchValue4");
+    debugPrint("Switch values after update: $switchValue1, $switchValue2, $switchValue3, $switchValue4");
     searchProducts(searchController.value.text);
   }
 
@@ -76,6 +77,9 @@ class AppSearchController extends GetxController implements GetxService {
     var fallbackParam = getFallbackParameter(name);
     Response response =
         await parser.getSearchResult(fallback ? fallbackParam : param);
+
+    debugPrint("HERE: ${response.statusCode} $param");
+
     if (response.statusCode == 200) {
       Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
       var salonData = myMap['salon'];
@@ -133,6 +137,7 @@ class AppSearchController extends GetxController implements GetxService {
       "duo": switchValue2,
       "trio": switchValue3,
       "quarter": switchValue4,
+      "date": selectedDate.toString(),
       "lat": parser.getLat(),
       "lng": parser.getLng()
     };
@@ -145,6 +150,7 @@ class AppSearchController extends GetxController implements GetxService {
       "duo": !switchValue2,
       "trio": !switchValue3,
       "quarter": !switchValue4,
+      "date": selectedDate.toString(),
       "lat": parser.getLat(),
       "lng": parser.getLng(),
     };

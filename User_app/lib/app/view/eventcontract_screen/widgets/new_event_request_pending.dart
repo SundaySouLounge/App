@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app_user/app/backend/parse/events_creation_parse.dart';
 import 'package:app_user/app/controller/events_creation_controller.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,25 @@ class NewEventRequestDialogPending extends StatelessWidget {
     BookingController controller,
   ) async {
 
+    // Show loading popup to block the UI and indicate that the request is being processed.
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Dialog.fullscreen(
+          backgroundColor: const Color.fromARGB(255, 0, 0, 0), // Bac
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+            ],
+          ),
+        );
+      },
+    );
+
     // Fetch the events for the musician/DJ.
     Response response;
     final EventsCreationParser parser = Get.find();
@@ -61,7 +81,7 @@ class NewEventRequestDialogPending extends StatelessWidget {
       'individual_id': eventContractData.individualId ?? 0,
       'salon_id': eventContractData.salonId ?? 0,
     });
-    List<DateTime> savedEventContractsDates = [];
+    Map<DateTime, DateTime> savedEventContractsDates = {};
     if (response.statusCode == 200) {
       Map<String, dynamic> myMap = Map<String, dynamic>.from(response.body);
       List<EventContractModel> savedEventContractsList = myMap['data']
@@ -71,9 +91,26 @@ class NewEventRequestDialogPending extends StatelessWidget {
       for(final event in savedEventContractsList) {
         if(event.status == 'Declined' || event.status == 'Deleted') { continue; }
         if(event.date == null) { continue; }
-        savedEventContractsDates.add(event.date!);
+        DateTime startTime = toTimeSlot(event.date!);
+        savedEventContractsDates[startTime] = getEndTimeSlot(startTime, event.time);
       }
     }
+
+    // Fetch unavailable dates for this musician.
+    Response unavailableDatesResponse = await parser.getUnavailableDatesById({
+      'individual_id': eventContractData.individualId ?? 0,
+      'salon_id': eventContractData.salonId ?? 0,
+    });
+    List<DateTime> unavailableDatesList = [];
+    if (unavailableDatesResponse.statusCode == 200) {
+      Map<String, dynamic> myMap = Map<String, dynamic>.from(unavailableDatesResponse.body);
+        unavailableDatesList = (myMap['data'] as List<dynamic>)
+            .map<DateTime>((item) => DateTime.parse(item.toString()))
+            .toSet().toList();
+    }
+
+    // Pop loading dialog.
+    Navigator.of(context).pop();
 
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -81,12 +118,11 @@ class NewEventRequestDialogPending extends StatelessWidget {
       //firstDate: DateTime(2023),
       firstDate: DateTime.now(),  // So that
       lastDate: DateTime(2027),
-/*      selectableDayPredicate: (day) {
+      selectableDayPredicate: (day) {
         DateTime initial = eventContractData.date ?? DateTime.now();
-        // Past date will return 1. Today be 0. Future be -1.
-        return initial.compareTo(day) > 0;
+        // If date is not in unavailable list it is selectable.
+        return !unavailableDatesList.contains(day);
       },
- */
     );
 
     if (pickedDate != null) {
@@ -106,21 +142,128 @@ class NewEventRequestDialogPending extends StatelessWidget {
           pickedTime.minute,
         );
 
-        print('Value of eventContractData: $eventContractData');
+        int slotMinutes = getSlotMinutes(eventContractData.time);
+
+        DateTime updatedSlotDateTime = toTimeSlot(updatedDateTime);
+
+        bool isUpdatedTimeSlotValid = true;
+        // Before 11AM is not allowed.
+        if(updatedSlotDateTime.hour < 11) {
+          isUpdatedTimeSlotValid = false;
+        }
+        // Check if musician is available for the slot.
+        else {
+          savedEventContractsDates.forEach((key, value) {
+            DateTime newStart = key.subtract(Duration(minutes: slotMinutes));
+            debugPrint("$updatedSlotDateTime newStart: $newStart value: $value");
+            if(updatedSlotDateTime.compareTo(newStart) > 0 && updatedSlotDateTime.compareTo(value) < 0) {
+              isUpdatedTimeSlotValid = false;
+              return;
+            }
+          });
+        }
+
+        debugPrint("savedEventContractsDates: $savedEventContractsDates");
+
+        if(!isUpdatedTimeSlotValid) {
+          // Get events on this particular day.
+          Map<DateTime, DateTime> eventsOnDay = {};
+          savedEventContractsDates.forEach((key, value) {
+            if(DateTime(updatedSlotDateTime.year, updatedSlotDateTime.month, updatedSlotDateTime.day).compareTo(
+              DateTime(key.year, key.month, key.day)) == 0) {
+              eventsOnDay[key] = value;
+            }
+          });
+
+          // Sort events slots by time.
+          var sortedEventsOnDay = Map.fromEntries(eventsOnDay.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)));
+          List<DateTime> slots = [];
+          sortedEventsOnDay.forEach((key, value) {
+            slots.add(key);
+            slots.add(value);
+          });
+
+          Map<DateTime, DateTime> availableSlots = {};
+          for(int i = 0; i < slots.length; i += 2) {
+            // First slot.
+            if(i == 0) {
+              DateTime firstSlotTime = DateTime(updatedDateTime.year, updatedDateTime.month, updatedDateTime.day, 11);
+              int diffMinutes = slots[i].difference(firstSlotTime).inMinutes;
+              if(diffMinutes >= slotMinutes) {
+                DateTime endTime = slots[i].subtract(Duration(minutes: slotMinutes));
+                if(endTime.compareTo(firstSlotTime) < 0) {
+                  availableSlots[firstSlotTime] = endTime;
+                }
+              }
+            }
+            // Intermediate slots.
+            else {
+              int diffMinutes = slots[i].difference(slots[i - 1]).inMinutes;
+              if(diffMinutes >= slotMinutes) {
+                availableSlots[slots[i - 1]] = slots[i].subtract(Duration(minutes: slotMinutes));
+              }
+            }
+            // Last slot.
+            if(i == slots.length - 2) {
+              DateTime lastSlotTime = DateTime.utc(updatedDateTime.year, updatedDateTime.month, updatedDateTime.day, 23, 45);
+              int diffMinutes = lastSlotTime.difference(slots[i + 1]).inMinutes;
+              if(diffMinutes >= slotMinutes - 15) {
+                //DateTime startTime = slots[i + 1].add(const Duration(minutes: 15));
+                DateTime startTime = slots[i + 1];
+                availableSlots[startTime] = lastSlotTime.subtract(Duration(minutes: slotMinutes - 15));
+              }
+            }
+          }
+
+          // Builds slots string.
+          String slotsStr = "";
+          availableSlots.forEach((key, value) {
+            slotsStr += "\n${DateFormat('hh:mm a').format(key)} - ${DateFormat('hh:mm a').format(value)}";
+          });
+
+          debugPrint("availableSlots: $availableSlots");
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Unavailable", style: TextStyle(color: Colors.redAccent)),
+                content: Text(
+                      "The performer is not available on ${DateFormat('EEEE, d MMMM yyyy').format(updatedSlotDateTime)} at ${DateFormat('h:mm a').format(updatedSlotDateTime)} slot."
+                      "\n\nFor same day, choose a time between: $slotsStr"
+                    ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+          return;
+        }
+
+        debugPrint("updatedSlotDateTime: $updatedSlotDateTime");
+
+        // FIXME: This is to prevent below code from running for development. Once development is done, remove this.
+        // return;
 
         // Call the update method to send the updated date and time to the backend
         bool updateSuccess = await controller.updateEventContractDate(
-          updatedDateTime,
+          updatedSlotDateTime,
           eventContractData,
         );
 
-        print('Update success: $updateSuccess');
+        debugPrint('Update success: $updateSuccess');
 
         if (updateSuccess) {
           // Send notification upon successful update
           controller.sendNotificationOnUpdate(
             eventContractData,
-            updatedDateTime,
+            updatedSlotDateTime,
           );
           // Show success Snackbar
           successToast('Event updated successfully');
@@ -130,6 +273,24 @@ class NewEventRequestDialogPending extends StatelessWidget {
         }
       }
     }
+  }
+
+  DateTime toTimeSlot(DateTime dateTime) {
+    int minutes = (dateTime.minute / 15).floor() * 15;
+    return DateTime.utc(dateTime.year, dateTime.month, dateTime.day, dateTime.hour, minutes, 0);
+  }
+
+  DateTime getEndTimeSlot(DateTime startTime, String? time) {
+    if(time == null) { return startTime; }
+    int minutes = getSlotMinutes(time);
+    DateTime endTime = startTime.add(Duration(minutes: minutes));
+    return toTimeSlot(endTime);
+  }
+
+  int getSlotMinutes(String? time) {
+    if(time == null) { return 0; }
+    Map<String, int> slotMinutes = {"2 x 45-minute sets": 120, "2 x 1-hour sets": 130, "3 x 45-minute sets": 180, "4 x 45-minute sets": 240};
+    return slotMinutes[time]!;
   }
 
   void _showConfirmationDialog(BuildContext context,

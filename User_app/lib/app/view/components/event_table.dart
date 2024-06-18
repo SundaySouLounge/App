@@ -42,6 +42,7 @@ class _TableEventsState extends State<TableEvents> {
     final item = Get.put(EventsCreationController(parser: Get.find()));
 
     for (final item in controller.savedEventContractsList) {
+      if(item.status == 'Declined' || item.status == 'Deleted') { continue; }
       if (item.date != null) {
         final itemDate =
             DateTime(item.date!.year, item.date!.month, item.date!.day);

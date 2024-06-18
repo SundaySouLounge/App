@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:app_user/app/view/pending.dart';
@@ -185,6 +187,58 @@ class NotificationsSection extends StatelessWidget {
   }
 }
 
+// Color getStatusColor(String title) {
+//   final trimmedTitle = title.trim().toLowerCase();
+//   print('Trimmed Title: $trimmedTitle');
+//
+//   if (trimmedTitle.contains('pending')) {
+//     return Colors.yellow;
+//   } else if (trimmedTitle.contains('accepted')) {
+//     return Colors.black;
+//   } else if (trimmedTitle.contains('declined')) {
+//     return Colors.black;
+//   } else if (trimmedTitle.contains('You declined a contract from')) {
+//     return Colors.black;
+//   } else if (trimmedTitle.contains('has declined your contract!')) {
+//     return Colors.black;
+//   }else if (trimmedTitle.contains('You have accepted your contract!')) {
+//     return Colors.black;
+//   }else if (trimmedTitle.contains('You have accepted your contract!')) {
+//     return Colors.black;
+//   }else if (trimmedTitle.contains('is unavailable on')) {
+//     return Colors.black;
+//   }else if (trimmedTitle.contains('is negotiating your contact!')) {
+//     return Colors.green;
+//   }  else {
+//     return Colors.red;
+//   }
+// }
+// String getStatusText(String title) {
+//   String trimmedTitle = title.toLowerCase().trim();
+//
+//   if (trimmedTitle.contains('accepted a contract')) {
+//     return 'Accepted';
+//   } else if (trimmedTitle.contains('has declined your contract!')) {
+//     return 'Declined';
+//   } else if (trimmedTitle.contains('is unavailable on')) {
+//     return 'Declined';
+//   }else if (trimmedTitle.contains('You declined a contract from')) {
+//     return 'Declined';
+//   }else if (trimmedTitle.contains('You have accepted your contract!')) {
+//     return 'Accepted';
+//   }else if (trimmedTitle.contains('new event request')) {
+//     return 'Waiting For Artist';
+//   } else if (trimmedTitle.contains('is negotiating your contact!')) {
+//     return 'Need your attention!';
+//   } else if (trimmedTitle.contains('accepted your date change!')) {
+//     return 'Need your attention!';
+//   }else if (trimmedTitle.contains('declined your date Change!')) {
+//     return 'Need your attention!';
+//   }else {
+//     return 'Waiting For Artist';
+//   }
+// }
+
 Color getStatusColor(String title) {
   final trimmedTitle = title.trim().toLowerCase();
   print('Trimmed Title: $trimmedTitle');
@@ -197,17 +251,19 @@ Color getStatusColor(String title) {
     return Colors.black;
   } else if (trimmedTitle.contains('You declined a contract from')) {
     return Colors.black;
-  } else if (trimmedTitle.contains('has declined your contract!')) {
+  } else if (trimmedTitle.contains('has declined your')) {
     return Colors.black;
-  }else if (trimmedTitle.contains('You have accepted your contract!')) {
+  }else if (trimmedTitle.contains('accepted your contract!')) {
     return Colors.black;
-  }else if (trimmedTitle.contains('You have accepted your contract!')) {
+  }else if (trimmedTitle.contains('you have accepted your contract!')) {
     return Colors.black;
   }else if (trimmedTitle.contains('is unavailable on')) {
     return Colors.black;
-  }else if (trimmedTitle.contains('is negotiating your contact!')) {
+  } else if (trimmedTitle.contains('is negotiating your contact!')) {
     return Colors.green;
-  }  else {
+  } else if (trimmedTitle.contains('has sent you a message!')) {
+    return Colors.green;
+  } else {
     return Colors.red;
   }
 }
@@ -216,13 +272,13 @@ String getStatusText(String title) {
 
   if (trimmedTitle.contains('accepted a contract')) {
     return 'Accepted';
-  } else if (trimmedTitle.contains('has declined your contract!')) {
+  } else if (trimmedTitle.contains('has declined your')) {
     return 'Declined';
   } else if (trimmedTitle.contains('is unavailable on')) {
     return 'Declined';
-  }else if (trimmedTitle.contains('You declined a contract from')) {
+  }else if (trimmedTitle.contains('you declined a contract from')) {
     return 'Declined';
-  }else if (trimmedTitle.contains('You have accepted your contract!')) {
+  }else if (trimmedTitle.contains('accepted your contract')) {
     return 'Accepted';
   }else if (trimmedTitle.contains('new event request')) {
     return 'Waiting For Artist';
@@ -232,7 +288,10 @@ String getStatusText(String title) {
     return 'Need your attention!';
   }else if (trimmedTitle.contains('declined your date Change!')) {
     return 'Need your attention!';
-  }else {
+  } else if (trimmedTitle.contains('has sent you a message!')) {
+    List<String> list = LineSplitter.split(trimmedTitle).toList();
+    return list.isNotEmpty ? list[0] : trimmedTitle;
+  } else {
     return 'Waiting For Artist';
   }
 }

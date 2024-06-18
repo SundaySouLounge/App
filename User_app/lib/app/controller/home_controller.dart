@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:app_user/app/backend/models/top_freelancer_model.dart';
+import 'package:app_user/app/backend/models/top_salon_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:app_user/app/backend/api/handler.dart';
@@ -48,6 +52,12 @@ class HomeController extends GetxController implements GetxService {
   List<IndividualModel> _individualList = <IndividualModel>[];
   List<IndividualModel> get individualList => _individualList;
 
+  List<TopFreelancerModel> _topFreelancersList = <TopFreelancerModel>[];
+  List<TopFreelancerModel> get topFreelancersList => _topFreelancersList;
+
+  List<TopSalonModel> _topSalonsList = <TopSalonModel>[];
+  List<TopSalonModel> get topSalonsList => _topSalonsList;
+
   List<BannerModel> _bannerList = <BannerModel>[];
   List<BannerModel> get bannerList => _bannerList;
 
@@ -82,11 +92,15 @@ class HomeController extends GetxController implements GetxService {
       var salonData = myMap['salon'];
       var categoriesData = myMap['categories'];
       var individualData = myMap['individual'];
+      var topFreelancersData = myMap['topFreelancers'];
+      var topSalonsData = myMap['topSalons'];
       var bannerData = myMap['banners'];
       var products = myMap['products'];
       _salonList = [];
       _categoriesList = [];
       _individualList = [];
+      _topFreelancersList = [];
+      _topSalonsList = [];
       _bannerList = [];
       _productsList = [];
 
@@ -106,7 +120,18 @@ class HomeController extends GetxController implements GetxService {
         IndividualModel individual = IndividualModel.fromJson(data);
         _individualList.add(individual);
       });
-      debugPrint(individualList.length.toString());
+
+      topFreelancersData.forEach((data) {
+        TopFreelancerModel freelancer = TopFreelancerModel.fromJson(data);
+        _topFreelancersList.add(freelancer);
+      });
+      debugPrint("_topFreelancersList: ${_topFreelancersList.length} : ${jsonEncode(_topFreelancersList)}");
+
+      topSalonsData.forEach((data) {
+        TopSalonModel salon = TopSalonModel.fromJson(data);
+        _topSalonsList.add(salon);
+      });
+      debugPrint("_topSalonsList: ${_topSalonsList.length} : ${jsonEncode(_topSalonsList)}");
 
       bannerData.forEach((data) {
         BannerModel banner = BannerModel.fromJson(data);

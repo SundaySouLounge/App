@@ -17,7 +17,8 @@ use App\Models\User;
 use App\Models\Services;
 use App\Models\Packages;
 use DB;
-
+use Exception;
+use Faker\Calculator\Ean;
 
 class EventContractController extends Controller
 {
@@ -130,7 +131,7 @@ class EventContractController extends Controller
         if ($request->salon_id) {
             $request['id'] = Salon::find($request->salon_id)->uid;
             $venueName = $requestData['venue_name'] ?? 'A Venue';
-            $date = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('Y-m-d \TH:i') : 'Unknown Date';
+            $date = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('l jS F') : 'Unknown Date';
             $additionalText = ' has sent you a contract!';
             $request['title'] = $venueName . $additionalText;
             $request['message'] = $date;
@@ -138,12 +139,10 @@ class EventContractController extends Controller
                 'screen' => '/notifications',
                 'event_contract_id' => $data->id,
             ];
-
-            
         } else if ($request->individual_id) {
-                $request['id'] = Individual::find($request->individual_id)->uid;
-                $venueName = $requestData['venue_name'] ?? 'A Venue';
-            $date = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('Y-m-d \TH:i') : 'Unknown Date';
+            $request['id'] = Individual::find($request->individual_id)->uid;
+            $venueName = $requestData['venue_name'] ?? 'A Venue';
+            $date = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('l jS F') : 'Unknown Date';
             $additionalText = ' has sent you a contract!';
             $request['title'] = $venueName . $additionalText;
             $request['message'] = $date;
@@ -151,9 +150,7 @@ class EventContractController extends Controller
                 'screen' => '/notifications',
                 'event_contract_id' => $data->id,
             ];
-
-            
-        }else if( $request['id'] = $userInfo->id){
+        } else if($request['id'] == $userInfo->id) {
             $request['title'] = 'User Event Request';
             $request['message'] = 'Created new Event Contract. Please confirm it';
             $request['data'] = [
@@ -163,8 +160,21 @@ class EventContractController extends Controller
             $pushNotificationController->sendNotification($request);
         }
 
+        // Send notification to the venue.
+        if($userInfo->type == 'user') {
+            $request['id'] = $userInfo->id;
+            $request['title'] = $request->musician;
+            $request['message'] = isset($requestData['date']) ? Carbon::parse($requestData['date'])->format('l jS F') : 'Unknown Date';
+            $request['data'] = [
+                'screen' => '/notifications',
+                'event_contract_id' => $data->id,
+            ];
+            $pushNotificationController->sendNotification($request);
+        }
+
         $pushNotificationController->sendNotification($request);
             \Log::info($request->all());
+
 
         $settings = Settings::take(1)->first(); // Assuming you fetch your settings
         $generalInfo = Settings::take(1)->first();
@@ -243,9 +253,6 @@ class EventContractController extends Controller
                 \Log::error('Individual or user not found for individual_id: ' . $request->individual_id);
             }
         }
-
-
-
 
         $response = [
             'data' => $data,

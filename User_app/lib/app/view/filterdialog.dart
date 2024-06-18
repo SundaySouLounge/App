@@ -41,6 +41,7 @@ class _FilterDialogState extends State<FilterDialog> {
             SwitchListTile(
               title: Text('Solo'),
               value: widget.switchValue1,
+              activeTrackColor: Colors.green,
               onChanged: (value) {
                 setState(() {
                   widget.switchValue1 = value;
@@ -50,6 +51,7 @@ class _FilterDialogState extends State<FilterDialog> {
             SwitchListTile(
               title: Text('Duo'),
               value: widget.switchValue2,
+              activeTrackColor: Colors.green,
               onChanged: (value) {
                 setState(() {
                   widget.switchValue2 = value;
@@ -59,6 +61,7 @@ class _FilterDialogState extends State<FilterDialog> {
             SwitchListTile(
               title: Text('Trio'),
               value: widget.switchValue3,
+              activeTrackColor: Colors.green,
               onChanged: (value) {
                 setState(() {
                   widget.switchValue3 = value;
@@ -68,6 +71,7 @@ class _FilterDialogState extends State<FilterDialog> {
             SwitchListTile(
               title: Text('More'),
               value: widget.switchValue4,
+              activeTrackColor: Colors.green,
               onChanged: (value) {
                 setState(() {
                   widget.switchValue4 = value;
@@ -111,7 +115,7 @@ class _FilterDialogState extends State<FilterDialog> {
         ),
         TextButton(
           style: TextButton.styleFrom(
-            backgroundColor: ThemeProvider.appColor, // Background Color
+             backgroundColor: ThemeProvider.appColor, // Background Color
           ),
           onPressed: () {
             // Close the dialog without applying the filter

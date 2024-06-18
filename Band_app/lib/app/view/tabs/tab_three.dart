@@ -95,6 +95,7 @@ class CustomEventList extends StatelessWidget {
 
  Widget _buildEventRow(EventContractModel event) {
   final currentDate = DateTime.now();
+  if(event.status == 'Declined' || event.status == 'Deleted') { return Container(); }
   // Check if the event date is after today's date
   if (event.date != null && event.date!.isBefore(currentDate)) {
     // If the event date is older than today, return an empty container

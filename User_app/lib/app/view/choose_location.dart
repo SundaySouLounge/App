@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_user/app/controller/choose_location_controller.dart';
@@ -74,7 +76,8 @@ class _ChooseLocationScreenState extends State<ChooseLocationScreen> {
                 height: 50,
               ),
               Image.asset(
-                'assets/images/1.png',
+                //'assets/images/1.png',
+                'assets/images/OPENING IMAGE X${Random().nextInt(4) + 1}.jpg',
               ),
               const SizedBox(
                 height: 50,

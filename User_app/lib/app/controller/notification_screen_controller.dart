@@ -12,6 +12,7 @@ import 'package:app_user/app/controller/chat_controller.dart';
 import 'package:app_user/app/controller/login_controller.dart';
 import 'package:app_user/app/helper/router.dart';
 import 'package:app_user/app/util/constant.dart';
+import 'package:jiffy/jiffy.dart';
 
 class NotificationController extends GetxController implements GetxService {
   final NotificationsParser parser;
@@ -50,10 +51,13 @@ class NotificationController extends GetxController implements GetxService {
     //   Get.dialog(const NewEventRequestDialog());
     // }
   }
-String customFormattedDate(DateTime date) {
-  String formattedDate = DateFormat('EEEE d MMMM yyyy').format(date);
-  return formattedDate;
-}
+
+  String customFormattedDate(DateTime date) {
+    // String formattedDate = DateFormat('EEEE d MMMM yyyy').format(date);
+    String formattedDate = Jiffy(date).format('EEEE do MMMM');
+    return formattedDate;
+  }
+
   Future<void> getNotificationData() async {
     Response response = await parser.getMyNotificationData();
     apiCalled = true;
@@ -175,7 +179,7 @@ String customFormattedDate(DateTime date) {
 
       var notificationParam1 = {
         "id": eventContractData?.userId,
-        "title": "$currentDate you withdrawn your contract with ",
+        "title": "$currentDate you have withdrawn your contract with ",
         "message": " ${eventContractData!.musician}",
       };
       await parser.sendNotification(notificationParam1);
@@ -213,7 +217,8 @@ String customFormattedDate(DateTime date) {
     if (eventContractData != null) {
       var notificationParam1 = {
         "id": eventContractData!.userId,
-        "title": "${eventContractData!.venueName}, $currentDate",
+        // "title": "${eventContractData!.venueName}, $currentDate",
+        "title": "${eventContractData!.musician}, $currentDate",
         "message": "Negotiating",
       };
       await parser.sendNotification(notificationParam1);
@@ -234,12 +239,14 @@ String customFormattedDate(DateTime date) {
  Future<void> sendNotificationOnUpdate(DateTime updatedDateTime) async {
   if (eventContractData != null) {
     try {
-      String formattedDate = DateFormat('MM/dd/yyyy HH:mm').format(updatedDateTime);
+      // String formattedDate = DateFormat('MM/dd/yyyy HH:mm').format(updatedDateTime);
+      String formattedDate = customFormattedDate(updatedDateTime);
       String updatedBodys = '${eventContractData!.bodys} Venue: New Date $formattedDate  /n';
       var notificationParam1 = {
         "id": eventContractData!.userId,
        "title": "${eventContractData!.musician} Date Change",
-        "message": "${eventContractData!.date} to $formattedDate", // Add a default message or modify as needed
+        // "message": "${eventContractData!.date} to $formattedDate", // Add a default message or modify as needed
+        "message": "${customFormattedDate(eventContractData!.date!)} to $formattedDate", // Add a default message or modify as needed
       };
       print("Sending Notification 1: $notificationParam1");
       await parser.sendNotification(notificationParam1);
@@ -247,7 +254,8 @@ String customFormattedDate(DateTime date) {
       var notificationParam2 = {
         "id": eventContractData!.individualUid ?? eventContractData!.salonUid,
         "title": "${eventContractData!.venueName} has requested a Date Change",
-        "message": "${eventContractData!.date} to $formattedDate", // Add a default message or modify as needed
+        // "message": "${eventContractData!.date} to $formattedDate", // Add a default message or modify as needed
+        "message": "${customFormattedDate(eventContractData!.date!)} to $formattedDate", // Add a default message or modify as needed
       };
       print("Sending Notification 2: $notificationParam2");
       await parser.sendNotification(notificationParam2);
@@ -264,19 +272,22 @@ String customFormattedDate(DateTime date) {
 
 
   Future<void> onWithdrawalSubmit(String selectedDate) async {
+    String formattedSelectedDate = customFormattedDate(DateTime.parse(selectedDate));
   // Your existing logic
   String updatedBodys = '${eventContractData!.bodys} Venue: New Deadline $selectedDate  /n';
   if (eventContractData != null) {
     var notificationParam1 = {
       "id": eventContractData!.userId,
-      "title": "You have set a deadline for ${eventContractData!.musician}",
-      "message": "This job offer will disappear on $selectedDate",
+      "title": "You have set a deadline for ${eventContractData!.musician}!",
+      // "message": "This job offer will disappear on $selectedDate",
+      "message": "This job offer will disappear on $formattedSelectedDate",
     };
     await parser.sendNotification(notificationParam1);
     var notificationParam2 = {
       "id": eventContractData!.individualUid ?? eventContractData!.salonUid,
       "title": "${eventContractData!.venueName} has set a new deadline!",
-      "message": "This job offer will disappear on $selectedDate",
+      // "message": "This job offer will disappear on $selectedDate",
+      "message": "This job offer will disappear on $formattedSelectedDate",
     };
     eventContractData!.bodys = updatedBodys;
     await parser.updateEventContractById(eventContractData);
@@ -291,7 +302,7 @@ Future<void> onAcceptSubmit() async {
     if (eventContractData != null) {
       var notificationParam1 = {
         "id": eventContractData!.userId,
-        "title": "You have accepted your contract!",
+        "title": "You have accepted your contract with ${eventContractData!.musician}!",
         "message": "$currentDate",
       };
       await parser.sendNotification(notificationParam1);
@@ -307,7 +318,7 @@ Future<void> onAcceptSubmit() async {
     await parser.updateEventContractById(eventContractData);
   }
 
-  Future<void> onDeclineSubmit() async {
+Future<void> onDeclineSubmit() async {
   if (eventContractData != null) {
      String currentDate = customFormattedDate(eventContractData!.date!);
     String updatedBodys = '${eventContractData!.bodys} Venue: The contract was Declined on $currentDate \n';

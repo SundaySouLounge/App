@@ -985,8 +985,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       //END NEW ARTIST
-
                                       /// END BANNER
+
                                       Row(
                                         children: [
                                           Text(
@@ -1032,291 +1032,329 @@ class _HomeScreenState extends State<HomeScreen> {
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
                                           children: [
-                                            //BEST ARTIST
-
+                                            //ELITE ARTISTS
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Row(
-                                                children: [
-                                                   for (var item in (value
-                                                          .individualList
-                                                          .toList()
-                                                        ..shuffle())
-                                                      .take(4))
-                                                    Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              right: 10),
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    10)),
-                                                      ),
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          value.onSpecialist(
-                                                            item.id!,
-                                                          );
-                                                        },
-                                                        child: Column(
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 100,
-                                                              width: 250,
-                                                              child: ClipRRect(
+                                                      horizontal: 0),
+                                              child: Visibility(
+                                                visible: selectedIndex == 0 ||
+                                                    selectedIndex == 3,
+                                                child: Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(bottom: 20),
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                      child: Row(
+                                                        children: [
+                                                          for (var item in (value
+                                                              .topFreelancersList
+                                                          )
+                                                              .take(6))
+                                                            Container(
+                                                              margin:
+                                                              const EdgeInsets.only(
+                                                                  right: 10),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: Colors.grey),
                                                                 borderRadius:
-                                                                    const BorderRadius
-                                                                        .only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                ),
-                                                                child:
-                                                                    FadeInImage(
-                                                                  image: NetworkImage(
-                                                                      '${Environments.apiBaseURL}storage/images/${item.userInfo?.cover.toString()}'),
-                                                                  placeholder:
-                                                                      const AssetImage(
-                                                                          "assets/images/placeholder.jpeg"),
-                                                                  imageErrorBuilder:
-                                                                      (context,
-                                                                          error,
-                                                                          stackTrace) {
-                                                                    return Image.asset(
-                                                                        'assets/images/notfound.png',
-                                                                        fit: BoxFit
-                                                                            .cover);
-                                                                  },
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                ),
+                                                                const BorderRadius
+                                                                    .all(
+                                                                    Radius.circular(
+                                                                        10)),
                                                               ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 250,
-                                                              child: Stack(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            10),
-                                                                    child:
-                                                                        Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                              vertical: 10),
-                                                                          child:
-                                                                              Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            children: [
-                                                                              Expanded(
-                                                                                child: Text(
-                                                                                  item.userInfo!.firstName.toString() + ' ' + item.userInfo!.lastName.toString(),
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                  style: const TextStyle(fontSize: 15, color: ThemeProvider.whiteColor),
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
+                                                              child: InkWell(
+                                                                onTap: () {
+                                                                  value.onSpecialist(
+                                                                    item.id!,
+                                                                  );
+                                                                },
+                                                                child: Column(
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      height: 100,
+                                                                      width: 250,
+                                                                      child: ClipRRect(
+                                                                        borderRadius:
+                                                                        const BorderRadius
+                                                                            .only(
+                                                                          topLeft: Radius
+                                                                              .circular(
+                                                                              10),
+                                                                          topRight: Radius
+                                                                              .circular(
+                                                                              10),
                                                                         ),
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .only(
-                                                                              bottom: 15),
+                                                                        child:
+                                                                        FadeInImage(
+                                                                          image: NetworkImage(
+                                                                              '${Environments.apiBaseURL}storage/images/${item.userInfo?.cover.toString()}'),
+                                                                          placeholder:
+                                                                          const AssetImage(
+                                                                              "assets/images/placeholder.jpeg"),
+                                                                          imageErrorBuilder:
+                                                                              (context,
+                                                                              error,
+                                                                              stackTrace) {
+                                                                            return Image.asset(
+                                                                                'assets/images/notfound.png',
+                                                                                fit: BoxFit
+                                                                                    .cover);
+                                                                          },
+                                                                          fit: BoxFit
+                                                                              .cover,
                                                                         ),
-                                                                      ],
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                  Positioned(
-                                                                    right: 0,
-                                                                    bottom: 0,
-                                                                    child:
-                                                                        Container(
-                                                                      height:
-                                                                          30,
-                                                                      width: 60,
-                                                                      decoration: const BoxDecoration(
-                                                                          color: ThemeProvider
-                                                                              .appColor,
-                                                                          borderRadius: BorderRadius.only(
-                                                                              topLeft: Radius.circular(10),
-                                                                              bottomRight: Radius.circular(10))),
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
+                                                                    SizedBox(
+                                                                      width: 250,
+                                                                      child: Stack(
                                                                         children: [
-                                                                          Text(
-                                                                            'Book'.tr,
-                                                                            style:
-                                                                                const TextStyle(fontSize: 10, color: Colors.white),
-                                                                          )
+                                                                          Padding(
+                                                                            padding: const EdgeInsets
+                                                                                .symmetric(
+                                                                                horizontal:
+                                                                                10),
+                                                                            child:
+                                                                            Column(
+                                                                              crossAxisAlignment:
+                                                                              CrossAxisAlignment
+                                                                                  .start,
+                                                                              children: [
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets
+                                                                                      .symmetric(
+                                                                                      vertical: 10),
+                                                                                  child:
+                                                                                  Row(
+                                                                                    mainAxisAlignment:
+                                                                                    MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      Expanded(
+                                                                                        child: Text(
+                                                                                          item.userInfo!.firstName.toString() + ' ' + item.userInfo!.lastName.toString(),
+                                                                                          overflow: TextOverflow.ellipsis,
+                                                                                          style: const TextStyle(fontSize: 15, color: ThemeProvider.whiteColor),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets
+                                                                                      .only(
+                                                                                      bottom: 15),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          Positioned(
+                                                                            right: 0,
+                                                                            bottom: 0,
+                                                                            child:
+                                                                            Container(
+                                                                              height:
+                                                                              30,
+                                                                              width: 60,
+                                                                              decoration: const BoxDecoration(
+                                                                                  color: ThemeProvider
+                                                                                      .appColor,
+                                                                                  borderRadius: BorderRadius.only(
+                                                                                      topLeft: Radius.circular(10),
+                                                                                      bottomRight: Radius.circular(10))),
+                                                                              child:
+                                                                              Row(
+                                                                                mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    'Book'.tr,
+                                                                                    style:
+                                                                                    const TextStyle(fontSize: 10, color: Colors.white),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
-                                                          ],
-                                                        ),
+                                                        ],
                                                       ),
                                                     ),
-                                                  for (var item in (value
-                                                          .salonList
-                                                          .toList()
-                                                        ..shuffle())
-                                                      .take(2))
-                                                    Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              right: 10),
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    10)),
-                                                      ),
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          value.onServices(
-                                                            item.id!,
-                                                          );
-                                                        },
-                                                        child: Column(
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 100,
-                                                              width: 250,
-                                                              child: ClipRRect(
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 0),
+                                              child: Visibility(
+                                                visible: selectedIndex == 1 ||
+                                                    selectedIndex == 2,
+                                                child: Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(bottom: 20),
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                      child: Row(
+                                                        children: [
+                                                          for (var item in (value
+                                                              .topSalonsList
+                                                          )
+                                                              .take(6))
+                                                            Container(
+                                                              margin:
+                                                              const EdgeInsets.only(
+                                                                  right: 10),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: Colors.grey),
                                                                 borderRadius:
-                                                                    const BorderRadius
-                                                                        .only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                ),
-                                                                child:
-                                                                    FadeInImage(
-                                                                  image: NetworkImage(
-                                                                      '${Environments.apiBaseURL}storage/images/${item.cover.toString()}'),
-                                                                  placeholder:
-                                                                      const AssetImage(
-                                                                          "assets/images/placeholder.jpeg"),
-                                                                  imageErrorBuilder:
-                                                                      (context,
-                                                                          error,
-                                                                          stackTrace) {
-                                                                    return Image.asset(
-                                                                        'assets/images/notfound.png',
-                                                                        fit: BoxFit
-                                                                            .cover);
-                                                                  },
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                ),
+                                                                const BorderRadius
+                                                                    .all(
+                                                                    Radius.circular(
+                                                                        10)),
                                                               ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 250,
-                                                              child: Stack(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        horizontal:
-                                                                            10),
-                                                                    child:
-                                                                        Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                              vertical: 10),
-                                                                          child:
-                                                                              Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            children: [
-                                                                              Expanded(
-                                                                                child: Text(
-                                                                                  item.name.toString(),
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                  style: const TextStyle(fontSize: 15, color: ThemeProvider.whiteColor),
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
+                                                              child: InkWell(
+                                                                onTap: () {
+                                                                  value.onServices(
+                                                                    item.id!,
+                                                                  );
+                                                                },
+                                                                child: Column(
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      height: 100,
+                                                                      width: 250,
+                                                                      child: ClipRRect(
+                                                                        borderRadius:
+                                                                        const BorderRadius
+                                                                            .only(
+                                                                          topLeft: Radius
+                                                                              .circular(
+                                                                              10),
+                                                                          topRight: Radius
+                                                                              .circular(
+                                                                              10),
                                                                         ),
-                                                                        Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .only(
-                                                                              bottom: 15),
+                                                                        child:
+                                                                        FadeInImage(
+                                                                          image: NetworkImage(
+                                                                              '${Environments.apiBaseURL}storage/images/${item.cover.toString()}'),
+                                                                          placeholder:
+                                                                          const AssetImage(
+                                                                              "assets/images/placeholder.jpeg"),
+                                                                          imageErrorBuilder:
+                                                                              (context,
+                                                                              error,
+                                                                              stackTrace) {
+                                                                            return Image.asset(
+                                                                                'assets/images/notfound.png',
+                                                                                fit: BoxFit
+                                                                                    .cover);
+                                                                          },
+                                                                          fit: BoxFit
+                                                                              .cover,
                                                                         ),
-                                                                      ],
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                  Positioned(
-                                                                    right: 0,
-                                                                    bottom: 0,
-                                                                    child:
-                                                                        Container(
-                                                                      height:
-                                                                          30,
-                                                                      width: 60,
-                                                                      decoration: const BoxDecoration(
-                                                                          color: ThemeProvider
-                                                                              .appColor,
-                                                                          borderRadius: BorderRadius.only(
-                                                                              topLeft: Radius.circular(10),
-                                                                              bottomRight: Radius.circular(10))),
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
+                                                                    SizedBox(
+                                                                      width: 250,
+                                                                      child: Stack(
                                                                         children: [
-                                                                          Text(
-                                                                            'Book'.tr,
-                                                                            style:
-                                                                                const TextStyle(fontSize: 10, color: Colors.white),
-                                                                          )
+                                                                          Padding(
+                                                                            padding: const EdgeInsets
+                                                                                .symmetric(
+                                                                                horizontal:
+                                                                                10),
+                                                                            child:
+                                                                            Column(
+                                                                              crossAxisAlignment:
+                                                                              CrossAxisAlignment
+                                                                                  .start,
+                                                                              children: [
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets
+                                                                                      .symmetric(
+                                                                                      vertical: 10),
+                                                                                  child:
+                                                                                  Row(
+                                                                                    mainAxisAlignment:
+                                                                                    MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      Expanded(
+                                                                                        child: Text(
+                                                                                          item.name.toString(),
+                                                                                          overflow: TextOverflow.ellipsis,
+                                                                                          style: const TextStyle(fontSize: 15, color: ThemeProvider.whiteColor),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets
+                                                                                      .only(
+                                                                                      bottom: 15),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          Positioned(
+                                                                            right: 0,
+                                                                            bottom: 0,
+                                                                            child:
+                                                                            Container(
+                                                                              height:
+                                                                              30,
+                                                                              width: 60,
+                                                                              decoration: const BoxDecoration(
+                                                                                  color: ThemeProvider
+                                                                                      .appColor,
+                                                                                  borderRadius: BorderRadius.only(
+                                                                                      topLeft: Radius.circular(10),
+                                                                                      bottomRight: Radius.circular(10))),
+                                                                              child:
+                                                                              Row(
+                                                                                mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    'Book'.tr,
+                                                                                    style:
+                                                                                    const TextStyle(fontSize: 10, color: Colors.white),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
-                                                          ],
-                                                        ),
+                                                        ],
                                                       ),
                                                     ),
-                                                ],
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ],

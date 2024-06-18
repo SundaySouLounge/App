@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ultimate_band_owner_flutter/app/backend/api/handler.dart';
 import 'package:ultimate_band_owner_flutter/app/backend/models/chat_list_model.dart';
 import 'package:ultimate_band_owner_flutter/app/backend/parse/chat_parse.dart';
+import 'package:ultimate_band_owner_flutter/app/backend/parse/profile_parse.dart';
 
 class ChatController extends GetxController implements GetxService {
   final ChatParser parser;
@@ -126,10 +127,17 @@ class ChatController extends GetxController implements GetxService {
     yourMessage = false;
     update();
     if (response.statusCode == 200) {
+      final ProfileParser profileParser = Get.find();
+      String msgExcerpt = msg;
+      if(msg.length > 60) {
+        msgExcerpt = "${msg.substring(0, 60)}...";
+      }
       var notificationParam = {
         "id": receiverId,
-        "title": 'New message received'.tr,
-        "message": msg
+        // "title": 'New message received'.tr,
+        // "message": msg
+        "title": "${profileParser.getName()} has sent you a message! \n$msgExcerpt",
+        "message": "Click to view and reply!"
       };
       await parser.sendNotification(notificationParam);
       getChatList();

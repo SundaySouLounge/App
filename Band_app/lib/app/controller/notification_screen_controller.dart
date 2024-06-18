@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:ultimate_band_owner_flutter/app/backend/api/handler.dart';
 import 'package:ultimate_band_owner_flutter/app/backend/models/event_contract_model.dart';
 import 'package:ultimate_band_owner_flutter/app/backend/models/notification_model.dart';
@@ -82,7 +83,8 @@ class NotificationController extends GetxController implements GetxService {
   }
 
   String customFormattedDate(DateTime date) {
-  String formattedDate = DateFormat('EEEE d MMMM yyyy').format(date);
+  // String formattedDate = DateFormat('EEEE d MMMM yyyy').format(date);
+    String formattedDate = Jiffy(date).format('EEEE do MMMM');
   return formattedDate;
 }
 
@@ -236,7 +238,7 @@ class NotificationController extends GetxController implements GetxService {
     if (eventContractData != null) {
       var notificationParam1 = {
         "id": eventContractData!.userId,
-        "title": "We're sorry but ${eventContractData!.musician} declined your Date Change!",
+        "title": "We're sorry but ${eventContractData!.musician} has declined your Date Change",
         "message": "Send him a message?",
       };
       await parser.sendNotification(notificationParam1);
@@ -281,13 +283,15 @@ class NotificationController extends GetxController implements GetxService {
     if (eventContractData != null) {
       var notificationParam1 = {
         "id": eventContractData!.userId,
-        "title": "We're sorry but ${eventContractData!.musician} is unavailable on ${eventContractData!.date}",
+        // "title": "We're sorry but ${eventContractData!.musician} is unavailable on ${eventContractData!.date}!",
+        "title": "We're sorry but ${eventContractData!.musician} is unavailable on $currentDate!",
         "message": "Please pick another date...",
       };
       await parser.sendNotification(notificationParam1);
       var notificationParam2 = {
         "id": eventContractData!.individualUid ?? eventContractData!.salonUid,
-        "title": "You declined a contract from ${eventContractData!.nameVenue} on ${eventContractData!.date}",
+        // "title": "You declined a contract from ${eventContractData!.nameVenue} on ${eventContractData!.date}",
+        "title": "You declined a contract from ${eventContractData!.nameVenue} on $currentDate",
         "message": "$currentDate",
       };
       eventContractData!.bodys = updatedBodys;
