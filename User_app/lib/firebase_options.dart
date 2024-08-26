@@ -29,12 +29,12 @@ class DefaultFirebaseOptions {
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -45,37 +45,39 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAgSpcksUq7WH8Fz9B6YnJhRUCEPs9I6wg',
-    appId: '1:186811544956:web:ac13aac3b93c54346820f9',
-    messagingSenderId: '186811544956',
-    projectId: 'spacefans-shop-b2b36',
+    appId: '1:277575211611:android:848352599a09e63c5ffd7e',
+    messagingSenderId: '277575211611',
+    projectId: 'eliteartist-9d2a4',
     authDomain: 'spacefans-shop-b2b36.firebaseapp.com',
-    storageBucket: 'spacefans-shop-b2b36.appspot.com',
+    storageBucket: 'eliteartist-9d2a4.appspot.com',
     measurementId: 'G-LF6Q84SE3M',
   );
 
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDGXgdSIPAuAr1_mh1b7IFD-Nz3qGXihPc',
-    appId: '1:186811544956:android:08b414cd32336f756820f9',
-    messagingSenderId: '186811544956',
-    projectId: 'spacefans-shop-b2b36',
-    storageBucket: 'spacefans-shop-b2b36.appspot.com',
+    apiKey: 'AIzaSyDQSuNyp9oN_3si0fbS9_scyunzKfPhNzI',  // from google-services.json
+    appId: '1:277575211611:android:848352599a09e63c5ffd7e',  // from google-services.json
+    messagingSenderId: '277575211611',  // from project_number
+    projectId: 'eliteartist-9d2a4',  // from project_id
+    storageBucket: 'eliteartist-9d2a4.appspot.com',  // from storage_bucket
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDxwQQoadgTkI1IMtfEsT1VnADrCjb4jgk',
-    appId: '1:186811544956:ios:fb475db851cac9f06820f9',
-    messagingSenderId: '186811544956',
-    projectId: 'spacefans-shop-b2b36',
-    storageBucket: 'spacefans-shop-b2b36.appspot.com',
-    iosBundleId: 'spacefans.salon.user',
+    apiKey: 'AIzaSyASPa5ttqH4XjRGXbZJPj604W7aYfsKA5I',  // From API_KEY in plist
+    appId: '1:277575211611:ios:f6fd594eade51bf95ffd7e',  // From GOOGLE_APP_ID in plist
+    messagingSenderId: '277575211611',  // From GCM_SENDER_ID in plist
+    projectId: 'eliteartist-9d2a4',  // From PROJECT_ID in plist
+    storageBucket: 'eliteartist-9d2a4.appspot.com',  // From STORAGE_BUCKET in plist
+    iosBundleId: 'cloudtengroup.SundaySouLounge-App',  // From BUNDLE_ID in plist
   );
 
+
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDxwQQoadgTkI1IMtfEsT1VnADrCjb4jgk',
-    appId: '1:186811544956:ios:6d799d144e02f55e6820f9',
-    messagingSenderId: '186811544956',
-    projectId: 'spacefans-shop-b2b36',
-    storageBucket: 'spacefans-shop-b2b36.appspot.com',
-    iosBundleId: 'com.example.salonUser.RunnerTests',
+    apiKey: 'AIzaSyASPa5ttqH4XjRGXbZJPj604W7aYfsKA5I',
+    appId: '1:277575211611:ios:f6fd594eade51bf95ffd7e',
+    messagingSenderId: '277575211611',
+    projectId: 'eliteartist-9d2a4',
+    storageBucket: 'eliteartist-9d2a4.appspot.com',
+    iosBundleId: 'cloudtengroup.SundaySouLounge-App',
   );
 }

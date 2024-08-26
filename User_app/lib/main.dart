@@ -31,7 +31,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
-      name: 'spacefans-shop-user');
+      name: 'eliteartist-user');
   PushNotificationApi.setupFlutterNotifications();
   PushNotificationApi.init();
   FirebaseMessaging messaging = FirebaseMessaging.instance;
